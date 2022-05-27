@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+{% if plantas %}
+<title>INTACT-PLANTAS PRINCIPALES</title>
+{% endif %}
+{% if plantass%}
+<title>INTACT-PLANTAS SECUNDARIAS</title>
+{% endif %}
+{% endblock%}
+{% block content%}
+{% if plantas or plantass %}
+
+<section class="ftco-section">
+    <div class="container">
+        <br>
+        <nav class="nav nav-pills nav-justified"> 
+            {% if plantas %} 
+            <a class="nav-item nav-link active" href='{% url "listado_plantas" %}'>Plantas Principales</a>
+            <a class="nav-item nav-link" href='{% url "listado_plantas_Sec" %}'>Plantas Secundarias</a>
+            {% endif %}
+            {% if plantass %}
+            <a class="nav-item nav-link" href='{% url "listado_plantas" %}'>Plantas Principales</a>
+            <a class="nav-item nav-link active" href='{% url "listado_plantas_Sec" %}'>Plantas Secundarias</a>
+            {% endif%} 
+            <a class="nav-item nav-link" href='{% url "listado_sistemas" %}'>Sistemas</a>
+            <a class="nav-item nav-link" href='{% url "listado_subsistemas" %}'>Sub-Sistema</a> 
+            <a class="nav-item nav-link" href='{% url "registro_muestra_Pr" %}'>Equipos Principales</a>    
+            <a class="nav-item nav-link" href='{% url "registro_muestra" %}'>Equipos Secundarios</a>  
+        </nav>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled"></a>
+            <a class="nav-item nav-link disabled"></a>
+            <a class="nav-item nav-link" href='{% url "listado_tiposEquipos" %}'>Tipos de Equipos</a> 
+            <a class="nav-item nav-link disabled"></a>    
+            <a class="nav-item nav-link disabled"></a>  
+        </nav>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <br>
+                <h2 class="heading-section">LISTADO DE PLANTAS
+                    {% if plantass %} 
+                        SECUNDARIAS
+                    {% endif %}
+                    {% if plantas %}
+                        PRINCIPALES
+                    {% endif %}
+
+                </h2>
+                {% if plantas %} 
+                    <a id="numero" class="nav-item nav-link disabled" href="#"></a>
+                {% endif %}
+                
+                {% if plantass %}
+                    <a id="numero_sec" class="nav-item nav-link disabled" href="#"></a>
+                {% endif %}
+            </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+            <form method="get">
+                <div id="custom-search-input">
+                    <div class="input-group input-navbar">
+                        <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                        <span class="input-group-text" >
+                            <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            {% if plantass %} 
+            <a class="nav-item nav-link" href='{% url "registro_planta_secundaria" %}'>Registrar Planta Secundaria</a>
+            {% endif %}
+            {% if plantas %}
+            <a class="nav-item nav-link" href='{% url "registro_planta" %}'>Registrar Planta Principal</a>
+            {% endif %}
+        </nav>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>Código</center></th>
+                            <th><center>Nombre</center></th>
+                            <th><center>Descripción</center></th>
+                        
+                            {% if user.is_authenticated %}
+                            <th><center>Acciones</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for planta in plantas %}
+                        <tr>
+                            <td><center>{{planta.codigo}}</center></td>
+                            <td><center>{{planta.nombre}}</center></td>
+                            <td><center>{{planta.descripcion}}</center></td>
+                            {% if user.is_authenticated %}
+
+                            <td>
+                            <center><a href="{% url 'generar_reporte_plantas'%}?lang={{planta.id}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte.png' %}" title='REPORTE PDF'></a>&nbsp;&nbsp;
+                            <a href="{% url 'lista_p_editar' planta.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                            <a href="{% url 'lista_p_eliminar' planta.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>
+        
+                            </td>
+    
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        {% for planta_sec in plantass %}
+                        <tr>
+                            <td><center>{{planta_sec.codigo}}</center></td>
+                            <td><center>{{planta_sec.nombre}}</center></td>
+                            <td><center>{{planta_sec.descripcion}}</center></td>
+                            {% if user.is_authenticated %}
+
+                            <td>
+                                <center><a href="{% url 'generar_reporte_plantas_secundarias'%}?lang={{planta_sec.id}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte.png' %}" title='REPORTE PDF'></a>&nbsp;&nbsp;
+                                <a href="{% url 'lista_psec_editar' planta_sec.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                <a href="{% url 'lista_psec_eliminar' planta_sec.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>
+                            </td>
+    
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        </table>
+                        <nav class="nav nav-pills nav-justified"> 
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                            {% if page_obj.has_previous %}
+                            <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.previous_page_number }}'>Atrás</a></div>
+                            {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;
+                            {% if page_obj.has_next %}
+                            <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.next_page_number }}'>Siguiente</a></div>
+                            {% endif %}
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                        </nav>
+                     </div>
+                      </div>
+                      </div>
+                    </div>
+                </section>
+                    {% else %}
+                    <br>
+                    <section class="ftco-section">
+                    <div class="container">
+                        <nav class="nav nav-pills nav-justified"> 
+                            <a class="nav-item nav-link" href='{% url "listado_plantas" %}'>Plantas Principales</a>
+                            <a class="nav-item nav-link" href='{% url "listado_plantas_Sec" %}'>Plantas Secundarias</a> 
+                            <a class="nav-item nav-link" href='{% url "listado_sistemas" %}'>Sistemas</a>
+                            <a class="nav-item nav-link" href='{% url "listado_subsistemas" %}'>Sub-Sistema</a> 
+                            <a class="nav-item nav-link" href='{% url "registro_muestra_Pr" %}'>Equipos Principales</a>    
+                            <a class="nav-item nav-link" href='{% url "registro_muestra" %}'>Equipos Secundarios</a>  
+                        </nav>
+                        <br>
+                    <form method="get">
+                        <div id="custom-search-input">
+                            <div class="input-group input-navbar">
+                                <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                                <span class="input-group-text" >
+                                    <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                    <br><br><br><br><br>
+                    <center><h1>No hay plantas registradas</h1></center>
+                    <br><br>
+                    <nav class="nav nav-pills nav-justified"> 
+                        <a class="nav-item nav-link" href='{% url "registro_planta" %}'>Registrar Planta Principal</a>
+                        <a class="nav-item nav-link" href='{% url "registro_planta_secundaria" %}'>Registrar Planta Secundaria</a>
+                    </nav>
+                    </div>
+                    </section>
+                    <br><br><br><br>
+                        
+                    {% endif %}
+
+{% endblock%}
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+  
+  var array=[];
+
+  
+  var form = $(this).closest("form");
+
+          $.ajax({
+            url: '{% url "vista_listado_plantas" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length-1;
+                 numero=array.length;
+                 document.getElementById('numero').textContent= 'PLANTAS REGISTRADAS: '+numero;
+
+            }})
+
+            $.ajax({
+            url: '{% url "vista_listado_plantas" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array2 =$.parseJSON(data.listado2);
+                 numeropr=array2.length;
+                 document.getElementById('numero_sec').textContent= 'PLANTAS REGISTRADAS: '+numeropr;             
+            }})
+        
+        })(jQuery);
+
+
+</script>
+{% endblock %}

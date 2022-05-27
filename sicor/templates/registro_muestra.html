@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+{% if equiposs %}
+<title>INTACT-ACTIVOS PRINCIPALES</title>
+{% endif %}
+{% if equipos %}
+<title>INTACT-ACTIVOS SECUNDARIOS</title>
+{% endif %}
+{% endblock%}
+{% block content%}
+{% if equipos or equiposs %}
+
+<section class="ftco-section">
+    <div class="container">
+        <br>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link" href='{% url "listado_plantas" %}'>Plantas Principales</a>
+            <a class="nav-item nav-link" href='{% url "listado_plantas_Sec" %}'>Plantas Secundarias</a> 
+            <a class="nav-item nav-link" href='{% url "listado_sistemas" %}'>Sistemas</a>    
+            <a class="nav-item nav-link" href='{% url "listado_subsistemas" %}'>Sub-Sistemas</a>
+            {% if equipos %} 
+            <a class="nav-item nav-link" href='{% url "registro_muestra_Pr" %}'>Equipos Principales</a>
+            <a class="nav-item nav-link active" href='{% url "registro_muestra" %}'>Equipos Secundarios</a>
+            {% endif %}
+            {% if equiposs %}
+            <a class="nav-item nav-link active" href='{% url "registro_muestra_Pr" %}'>Equipos Principales</a>
+            <a class="nav-item nav-link" href='{% url "registro_muestra" %}'>Equipos Secundarios</a>
+            {% endif%}                 
+        </nav>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled"></a>
+            <a class="nav-item nav-link disabled"></a>
+            <a class="nav-item nav-link" href='{% url "listado_tiposEquipos" %}'>Tipos de Equipos</a> 
+            <a class="nav-item nav-link disabled"></a>    
+            <a class="nav-item nav-link disabled"></a>  
+        </nav>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <br>
+                <h2 class="heading-section">LISTADO DE ACTIVOS
+                    {% if equipos %} 
+                        SECUNDARIOS
+                    {% endif %}
+                    {% if equiposs %}
+                        PRINCIPALES
+                    {% endif %}
+                </h2>
+                {% if equipos %} 
+                    <a id="numero" class="nav-item nav-link disabled" href="#"></a>
+                {% endif %}
+                
+                {% if equiposs %}
+                    <a id="numero_pr" class="nav-item nav-link disabled" href="#"></a>
+                {% endif %}
+
+            </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+            <form method="get">
+                <div id="custom-search-input">
+                    <div class="input-group input-navbar">
+                        <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                        <span class="input-group-text" >
+                            <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            {% if equiposs %}          
+            <a class="nav-item nav-link" href='{% url "generar_reporte_equipoPr_total" %}' target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte3.png' %}" title='REPORTE TOTAL DE ACTIVOS PRINCIPALES'></a>
+            {% endif %}
+            {% if equipos %}          
+            <a class="nav-item nav-link" href='{% url "generar_reporte_equipoSec_total" %}' target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte3.png' %}" title='REPORTE TOTAL DE ACTIVOS SECUNDARIOS'></a>
+            {% endif %}
+            <a class="nav-item nav-link disabled" href="#"></a>
+            {% if equipos %} 
+            <a id="" class="nav-item nav-link" href='{% url "registro_equipos" %}'>Registrar Equipo Secundario</a>
+            {% endif %}
+            {% if equiposs %}
+            <a id="" class="nav-item nav-link" href='{% url "registro_equipos_principal" %}'>Registrar Equipo Principal</a>
+            {% endif %}
+        </nav>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>Tag</center></th>
+                            <th><center>Planta Principal</center></th>
+                            <th><center>Planta Secundaria</center></th>
+                            <th><center>Sistema</center></th>
+                            <th><center>Nombre</center></th>
+                            <th><center>Modelo/Serie</center></th>
+                            <th><center>Capacidad de Diseño/Operativa</center></th>
+                            <th><center>Fecha de instalación</center></th>
+                            <!-- <th><center>Fecha del último mantenimiento integral</center></th> -->
+                            <!-- <th><center>Estado Operativo</center></th> -->
+                        
+                            {% if user.is_authenticated %}
+                            <th><center>Acciones</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for equipo_pr in equiposs %}
+                        <tr>
+                            <td><center>{{equipo_pr.codigo}}</center></td>
+                            <td><center>{{equipo_pr.planta}}</center></td>
+                            <td><center>{{equipo_pr.planta_secundaria}}</center></td>
+                            <td><center>{{equipo_pr.sistema}}</center></td>
+                            <td><center>{{equipo_pr.nombre}}</center></td>
+                            {% if equipo_pr.modelo or equipo_pr.serie %}
+                            <td><center>{{equipo_pr.modelo}}/{{equipo_pr.serie}}</center></td>
+                            {% else %}
+                            <td><center>---</center></td>
+                            {% endif %}
+                            <td><center>{{equipo_pr.capacidad}}</center></td>
+                            <td><center>{{equipo_pr.año}}</center></td>
+
+                            <!-- <td><center>{{equipo.fu_mantenimiento}}</center></td> -->
+                            <!-- {% if equipo.estado == 'O' %} -->
+                            <!-- <td style="background:rgb(0, 255, 42)"><center>{{equipo.estado}}</center></td> -->
+                             <!-- {% else %} -->
+                            <!-- <td style="background:red"><center>{{equipo.estado}}</center></td> -->
+                            <!-- {% endif %} -->
+                            {% if user.is_authenticated %}
+
+                            <td>
+                            <center><p><a href="{% url 'generar_reporte_equipoPr' %}?lang={{equipo_pr.id}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte.png' %}" title='REPORTE PDF'></a>&nbsp;&nbsp;
+                            {% if equipo_pr.datasheet %}
+                            <a href="{{ MEDIA_URL }}{{equipo_pr.datasheet}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/pdf.png' %}" title="VER DATASHEET"></a>&nbsp;&nbsp;
+                            </p><br>
+                            {% endif %}
+                            <p>
+                            <a href="{% url 'lista_editar_pr' equipo_pr.id %}"><img src="{% static 'iconos/editar.png' %}" title="EDITAR"></a>&nbsp;&nbsp;
+                            <a href="{% url 'lista_eliminar' equipo_pr.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="ELIMINAR"></a></p></center>
+            
+                            </td>
+    
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        {% for equipo in equipos %}
+                        <tr>
+                            <td><center>{{equipo.codigo}}</center></td>
+                            <td><center>{{equipo.planta}}</center></td>
+                            <td><center>{{equipo.planta_secundaria}}</center></td>
+                            <td><center>{{equipo.sistema}}</center></td>
+                            <td><center>{{equipo.nombre}}</center></td>
+                            {% if equipo.modelo or equipo.serie %}
+                            <td><center>{{equipo.modelo}}/{{equipo.serie}}</center></td>
+                            {% else %}
+                            <td><center>---</center></td>
+                            {% endif %}
+                            <td><center>{{equipo.capacidad}}</center></td>
+                            <td><center>{{equipo.año}}</center></td>
+
+                            <!-- <td><center>{{equipo.fu_mantenimiento}}</center></td> -->
+                            <!-- {% if equipo.estado == 'O' %} -->
+                            <!-- <td style="background:rgb(0, 255, 42)"><center>{{equipo.estado}}</center></td> -->
+                             <!-- {% else %} -->
+                            <!-- <td style="background:red"><center>{{equipo.estado}}</center></td> -->
+                            <!-- {% endif %} -->
+                            {% if user.is_authenticated %}
+
+                            <td>
+                            <center><p><a href="{% url 'generar_reporte_equipoSec'%}?lang={{equipo.id}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte.png' %}" title='REPORTE PDF'></a>&nbsp;&nbsp;
+                            {% if equipo.datasheet %}
+                            <a href="{{ MEDIA_URL }}{{equipo.datasheet}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/pdf.png' %}" title="VER DATASHEET"></a>&nbsp;&nbsp;</p><br>
+                            {% endif %}
+                            <p>
+                            <a href="{% url 'lista_editar' equipo.id %}"><img src="{% static 'iconos/editar.png' %}" title="EDITAR"></a>&nbsp;&nbsp;
+                            <a href="{% url 'lista_eliminars' equipo.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="ELIMINAR"></a></p></center>
+        
+                            </td>
+    
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        
+                        </tbody>
+                        </table>
+                        <nav class="nav nav-pills nav-justified"> 
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                            {% if page_obj.has_previous %}
+                            <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.previous_page_number }}'>Atrás</a></div>
+                            {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;
+                            {% if page_obj.has_next %}
+                            <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.next_page_number }}'>Siguiente</a></div>
+                            {% endif %}
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                            <a class="nav-item nav-link disabled" href="#"></a>
+                        </nav>
+                     </div>
+                      </div>
+                      </div>
+                    </div>
+                </section>
+                    {% else %}
+                    <br>
+                    <section class="ftco-section">
+                    <div class="container">
+                        <nav class="nav nav-pills nav-justified"> 
+                            <a class="nav-item nav-link" href='{% url "listado_plantas" %}'>Plantas Principales</a>
+                            <a class="nav-item nav-link" href='{% url "listado_plantas_Sec" %}'>Plantas Secundarias</a> 
+                            <a class="nav-item nav-link" href='{% url "listado_sistemas" %}'>Sistemas</a>    
+                            <a class="nav-item nav-link" href='{% url "listado_subsistemas" %}'>Sub-Sistemas</a>
+                            <a class="nav-item nav-link" href='{% url "registro_muestra_Pr" %}'>Equipos Principales</a>
+                            <a class="nav-item nav-link" href='{% url "registro_muestra" %}'>Equipos Secundarios</a>              
+                        </nav>
+                        <br>
+                    <form method="get">
+                        <div id="custom-search-input">
+                            <div class="input-group input-navbar">
+                                <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                                <span class="input-group-text" >
+                                    <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                    <br><br><br><br><br>
+                    <center><h1>No hay activos registrados</h1></center>
+                    <br><br>
+                    <nav class="nav nav-pills nav-justified"> 
+                
+                        <a class="nav-item nav-link" href='{% url "registro_equipos_principal" %}'>Registrar Equipo Principal</a>
+                        <a class="nav-item nav-link" href='{% url "registro_equipos" %}'>Registrar Equipo Secundario</a>
+                    </nav>
+                    </div>
+                    </section>
+                    <br><br><br><br>
+                        
+                    {% endif %}
+
+{% endblock%}
+
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+  
+  var array=[];
+
+  
+  var form = $(this).closest("form");
+
+          $.ajax({
+            url: '{% url "vista_listado_activos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length-1;
+                 numero=array.length;
+                 document.getElementById('numero').textContent= 'ACTIVOS REGISTRADOS: '+numero;
+
+            }})
+
+            $.ajax({
+            url: '{% url "vista_listado_activos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array2 =$.parseJSON(data.listado2);
+                 numeropr=array2.length;
+                 document.getElementById('numero_pr').textContent= 'ACTIVOS REGISTRADOS: '+numeropr;             
+            }})
+        })(jQuery);
+
+</script>
+{% endblock %}

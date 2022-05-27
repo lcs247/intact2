@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CRITICIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+{% if criticidades or criticidadesPr %}
+<section class="ftco-section">
+    <div class="container">
+        <br>
+        <nav class="nav nav-pills nav-justified"> 
+            {% if criticidades %} 
+            <a class="nav-item nav-link" href='{% url "criticidad_muestra_Pr" %}'>Criticidad Simple Principal</a>
+            <a class="nav-item nav-link active" href='{% url "criticidad_muestra" %}'>Criticidad Simple Secundaria</a>
+            {% endif %}
+            {% if criticidadesPr %}
+            <a class="nav-item nav-link active" href='{% url "criticidad_muestra_Pr" %}'>Criticidad Simple Principal</a>
+            <a class="nav-item nav-link" href='{% url "criticidad_muestra" %}'>Criticidad Simple Secundaria</a>
+            {% endif%}
+            <a class="nav-item nav-link" href='{% url "criticidad_muestra_CPr" %}'>Criticidad Completa Principal</a>
+            <a class="nav-item nav-link" href='{% url "criticidad_muestra_CSec" %}'>Criticidad Completa Secundaria</a>              
+        </nav>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <br>
+                <h2 class="heading-section">CRITICIDAD DE EQUIPOS 
+                    {% if criticidades %} 
+                        SECUNDARIOS
+                    {% endif %}
+                    {% if criticidadesPr %}
+                        PRINCIPALES
+                    {% endif%}
+                </h2>
+            </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+            <form method="get">
+                <div id="custom-search-input">
+                    <div class="input-group input-navbar">
+                        <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                        <span class="input-group-text" >
+                            <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            {% if criticidades %} 
+            <a id="" class="nav-item nav-link" href='{% url "criticidad_form" %}'>Registrar Equipo Secundario</a>
+            {% endif %}
+            {% if criticidadesPr %}
+            <a id="" class="nav-item nav-link" href='{% url "criticidad_form_Pr" %}'>Registrar Equipo Principal</a>
+            {% endif%}
+        </nav>
+        <br>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" style="background:rgb(0, 255, 42)" href="#"><b>BAJO</b></a>          
+            <a class="nav-item nav-link disabled" style="background:rgb(208, 255, 0)" href='#'><b>MEDIO</b></a>
+            <a class="nav-item nav-link disabled" style="background:red" href="#"><b>ALTO</b></a>
+        </nav>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"><b>0</b></a>          
+            <a class="nav-item nav-link disabled" href="#"><b>1</b></a>          
+            <a class="nav-item nav-link disabled" href='#'><b>2</b></a>
+            <a class="nav-item nav-link disabled" href='#'><b>3</b></a>
+            <a class="nav-item nav-link disabled" href="#"><b>4</b></a>
+            <a class="nav-item nav-link disabled" href="#"><b>5</b></a>
+        </nav>
+        <br>     
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>ACTIVO</center></th>
+                            <th><center>CRITICIDAD PARCIAL</center></th>
+                            <th><center>CRITICIDAD TOTAL</center></th>                      
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for criticidad_pr in criticidadesPr %}
+                        <tr>
+                            <td><center>{{criticidad_pr.activo}}</center></td>
+                            <td><center>{{criticidad_pr.crit_pacial}}</center></td>
+
+                            {% if criticidad_pr.crit_total >= 0 and criticidad_pr.crit_total < 2  %}
+                            <td style="background:rgb(0, 255, 42)"><center>{{criticidad_pr.crit_total}}</center></td>
+                            {% endif %}
+                            {% if criticidad_pr.crit_total >= 2 and criticidad_pr.crit_total < 4  %}
+                            <td style="background:rgb(208, 255, 0)"><center>{{criticidad_pr.crit_total}}</center></td>
+                            {% endif %}
+                            {% if criticidad_pr.crit_total >= 4 and criticidad_pr.crit_total <= 5  %}
+                            <td style="background:red"><center>{{criticidad_pr.crit_total}}</center></td>
+                            {% endif %}
+
+
+                        {% if user.is_authenticated %}
+
+                            <td>
+                            <center><a href="{% url 'listacrit_editar_Pr' criticidad_pr.id %}"><img src="{% static 'iconos/editar.png' %}" title="EDITAR"></a>&nbsp;&nbsp; 
+                            <a href="{% url 'listacrit_eliminar_Pr' criticidad_pr.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="ELIMINAR"></a></center>
+        
+                            </td>
+    
+                        {% endif %}
+                        </tr>
+                    {% endfor %}
+                    {% for criticidad in criticidades %}
+                    <tr>
+                        <td><center>{{criticidad.activo}}</center></td>
+                        <td><center>{{criticidad.crit_pacial}}</center></td>
+
+                        {% if criticidad.crit_total >= 0 and criticidad.crit_total < 2  %}
+                        <td style="background:rgb(0, 255, 42)"><center>{{criticidad.crit_total}}</center></td>
+                        {% endif %}
+                        {% if criticidad.crit_total >= 2 and criticidad.crit_total < 4  %}
+                        <td style="background:rgb(208, 255, 0)"><center>{{criticidad.crit_total}}</center></td>
+                        {% endif %}
+                        {% if criticidad.crit_total >= 4 and criticidad.crit_total <= 5  %}
+                        <td style="background:red"><center>{{criticidad.crit_total}}</center></td>
+                        {% endif %}
+
+
+                    {% if user.is_authenticated %}
+
+                        <td>
+                        <center><a href="{% url 'listacrit_editar' criticidad.id %}"><img src="{% static 'iconos/editar.png' %}" title="EDITAR"></a>&nbsp;&nbsp; 
+                        <a href="{% url 'listacrit_eliminar' criticidad.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="ELIMINAR"></a>&nbsp;&nbsp; 
+                        <a href="{% url 'reporte_criticidad_CPr' %}?lang={{criticidad.id}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte.png' %}" title='REPORTE PDF'></a></center>
+
+                        </td>
+
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+
+                    {% else %}
+                    <br>
+                    <section class="ftco-section">
+                    <div class="container">
+                    <nav class="nav nav-pills nav-justified"> 
+             
+                            <a class="nav-item nav-link" href='{% url "criticidad_muestra_Pr" %}'>Criticidad Simple Principal</a>
+                            <a class="nav-item nav-link" href='{% url "criticidad_muestra" %}'>Criticidad Simple Secundaria</a>
+                            <a class="nav-item nav-link" href='{% url "criticidad_muestra_CPr" %}'>Criticidad Completa Principal</a>
+                            <a class="nav-item nav-link" href='{% url "criticidad_muestra_CSec" %}'>Criticidad Completa Secundaria</a>
+        
+                        </nav>
+                    <br>
+                    <form method="get">
+                        <div id="custom-search-input">
+                            <div class="input-group input-navbar">
+                                <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                                <span class="input-group-text" >
+                                    <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                    <br><br><br><br><br>
+                        <center><h1>No hay criticidades registradas</h1></center>
+                        <br><br>
+                        <nav class="nav nav-pills nav-justified"> 
+                            <a class="nav-item nav-link" href='{% url "criticidad_form_Pr" %}'>Registrar Equipo Principal</a>
+                            <a class="nav-item nav-link" href='{% url "criticidad_form" %}'>Registrar Equipo Secundario</a>
+                        </nav>
+                        <br><br><br><br>
+                    {% endif %}
+                      </tbody>
+                    </table>
+                    <nav class="nav nav-pills nav-justified"> 
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                        {% if page_obj.has_previous %}
+                        <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.previous_page_number }}'>Atrás</a></div>
+                        {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;
+                        {% if page_obj.has_next %}
+                        <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.next_page_number }}'>Siguiente</a></div>
+                        {% endif %}
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock%}

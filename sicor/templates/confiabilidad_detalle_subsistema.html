@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CONFIABILIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+{% if confspr %}
+<section class="ftco-section">
+  <div class="container">
+    <table class="table table-striped" id="tabla">
+        <thead>
+          <tr>
+              <th><center>ACTIVO</center></th>
+              <th><center>INICIO FALLA</center></th>
+              <th><center>FINAL FALLA</center></th>
+              <th><center>UPTIME (días)</center></th>
+              <th><center>DOWNTIME (días)</center></th>
+              <th><center>COSTO (USD)</center></th>
+              <th><center>DESCRIPCIÓN</center></th>
+    
+              {% if user.is_authenticated %}
+              <th><center>ACCIONES</center></th>
+              {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for confpr in confspr %}
+          <tr>
+              <td ><center id="nombreactv{{confpr.id}}">{{confpr.activo.nombre}}</center></td>
+              <td ><center>{{confpr.inicio_falla}}</center></td>
+              <td ><center>{{confpr.final_falla}}</center></td>
+              <td ><center id="v_up{{confpr.id}}">{{confpr.activo.subsistema}}</center></td>
+              <td ><center id="v_down{{confpr.id}}"></center></td>
+              <td><center>{{confpr.costo|floatformat:2}}</center></td>
+              <td><center>{{confpr.descripcion}}</center></td>
+
+          {% if user.is_authenticated %}
+
+              <td>
+                <center><a href="{% url 'listaPr_confiabilidad_editar' confpr.id %}"><img src="{% static 'iconos/editar.png' %}" title="EDITAR"></a>&nbsp;&nbsp; 
+                <a href="{% url 'listaPr_confiabilidad_eliminar' confpr.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="ELIMINAR"></a></center>
+
+              </td>
+             
+          {% endif %}
+          </tr>
+
+      {% endfor %}
+        </tbody>
+      </table>
+      
+  </div>
+</section>
+{% else %}
+NADA
+{% endif %}
+{% endblock%}
+
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+  
+  var form = $(this).closest("form");
+          $.ajax({
+            url: '{% url "buscar_listado_conf" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 console.log(array);
+                 limite=array.length;
+                 URLsearch = window.location.search;
+                 URLfilter =(URLsearch).split("?lang=")
+                
+
+                }})
+                
+        })(jQuery);
+
+</script>
+{% endblock %}

@@ -1,0 +1,394 @@
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CONFIABILIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+{% if confiabilidades %}
+
+      <table class="table table-striped" border="1">
+          <tr style="height: 50px">
+            <th ><center><img src="C:\xampp\htdocs\sicor\static\logos\logo.png" style="height: 100px;width: 200px;"></center></th>               
+            <th COLSPAN=6 style="background-color: rgb(0, 13, 86);color: white"><center><h1>REPORTE DE CONFIABILIDAD</h1></center></th>               
+          </tr>
+      </table>
+      <br>
+      <table class="table table-striped" border="1">
+          <TR style="height: 20px;width: 10px;"><TH>FECHA: </TH>
+            <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.modif|date:'d-m-Y'}}{% endif %}{% endfor %}</TD></TR>
+      </table>
+      <div class="row">
+          <div class="col-md-12">
+              <div class="table-wrap">
+                <nav class="nav nav-pills nav-justified">   
+                  <h3 class="nav-item nav-link" style="background-color: rgb(0, 13, 86);color: white;height: 30px;"><center>LISTADO DE FALLAS</center></h3>          
+                </nav>
+                  <table class="table table-striped" border="1">
+                    <thead>
+                      <tr style="height: 30px">
+                        <th COLSPAN=7><center>{% for confiabilidad in confiabilidades %}{% if forloop.last %}{{confiabilidad.activo.nombre}} ({{confiabilidad.activo.codigo}}){% endif %}{% endfor %}</center></th>               
+                      </tr>
+                      <tr style="height: 40px">
+                          <th><center>NRO.</center></th>
+                          <th><center>INICIO FALLA</center></th>
+                          <th><center>FINAL FALLA</center></th>
+                          <th><center>UPTIME (días)</center></th>
+                          <th><center>DOWNTIME (días)</center></th>
+                          <th><center>COSTO (USD)</center></th>
+                          <th><center>DESCRIPCIÓN</center></th>                
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for confiabilidad in confiabilidades %}
+                      <tr>
+                          <td style="width: 40px;height: 20px;"><center>{{ forloop.counter }}</center></td>
+                          <td style="width: 100px;"><center>{{confiabilidad.inicio_falla}}</center></td>
+                          <td style="width: 100px;"><center>{{confiabilidad.final_falla}}</center></td>
+                          <td style="width: 80px;"><center id="v_up{{confpr.id}}"></center></td>
+                          <td style="width: 80px;"><center>{{confiabilidad.downtime|floatformat:2}}</center></td>
+                          <td style="width: 80px;"><center>{{confiabilidad.costo|floatformat:2}}</center></td>
+                          <td style="height: auto;"><center>{{confiabilidad.descripcion}}</center></td>
+                      </tr>
+                  {% endfor %}
+                    </tbody>
+                  </table>
+                  <nav class="nav nav-pills nav-justified">   
+                      <h3 class="nav-item nav-link" style="background-color: rgb(0, 13, 86);color: white;"><center>RESULTADOS</center></h3>          
+                  </nav>
+                  <div id="resultados" style="display: block;">
+                  <table class="table table-striped" border="1">
+                    <TR style="height: 20px"><TH COLSPAN=2 >UPTIME TOTAL (días)</TH>
+                      <TD COLSPAN=2 align="CENTER" >{% for resultado in resultados %}{% if forloop.last %}{{resultado.uptime_total|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >DOWNTIME TOTAL (días)</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.downtime_total|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >COSTO TOTAL (USD)</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.costo_total|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >NRO. FALLAS</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.n_fallas|floatformat:0}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >AÑOS</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.años|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >TIEMPO TOTAL DE FUNCIONAMIENTO (TTF)</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.TTF|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >TIEMPO PROMEDIO ENTRE FALLAS (MTBF)</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.MTBF|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >TIEMPO PROMEDIO DE REPARACIÓN (MTTR)</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.MTTR|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >TIEMPO PROMEDIO FUNCIONAL (MTTF)</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.MTTF|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >TASA DE FALLA</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.T_falla|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >TASA DE REPARACIÓN</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.T_reparacion|floatformat:2}}{% endif %}{% endfor %}</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >CONFIABILIDAD OPERACIONAL</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.CO|floatformat:2}}{% endif %}{% endfor %}%</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >DISPONIBILIDAD OPERACIONAL</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.DO|floatformat:2}}{% endif %}{% endfor %}%</TD></TR>
+                    <TR style="height: 20px"><TH COLSPAN=2 >MANTENIBILIDAD</TH>
+                      <TD COLSPAN=2 align="CENTER">{% for resultado in resultados %}{% if forloop.last %}{{resultado.Mantenibilidad|floatformat:2}}{% endif %}{% endfor %}%</TD></TR>
+                    </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+  </div>
+</section>
+{% endif %}
+{% endblock%}
+
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+  
+  var array=[];  
+  var valores=[]; //ID
+  var sum_up=0;
+  var sum_down=0;
+  var URLsearch=[];
+  var URLfilter=[];
+  var fecha_fin=[];
+  var fecha_fin_down=[];
+  var fecha_ini=[];
+  var fecha_ini_up=[];
+  var max_fin=0;
+  var min_ini=0;
+  var count=0;
+  var count2=0;
+  var count3=0;
+  var n_fallas=0;
+  var TTF=0;
+  var años=0;
+  var MTBF=0;
+  var MTTR=0;
+  var MTTF=0;
+  var tasa_falla=0;
+  var tasa_repa=0;
+  var activo;
+  var orden=[];
+  var CO=0;
+  var DO=0;
+  var M=0;
+  var max=0;
+  var costo=[];
+  var costo_total=0;
+  var CT=[];
+  var PF=[];
+  var array_filter=[];
+
+  var form = $(this).closest("form");
+          $.ajax({
+            url: '{% url "buscar_listado_conf" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length;
+                 {% comment %}console.log(array);{% endcomment %} 
+                 URLsearch = window.location.search;
+                 URLfilter =(URLsearch).split("?lang=")
+
+                 for (i=0;i<limite;i++){
+                        valores[i]=array[i].fields.activo;
+                        if (valores[i]==URLfilter[1]){
+                            activo=array[i].fields.nombre;
+                            fecha_ini[count]=array[i].fields.inicio_falla;
+                            fecha_fin[count]=array[i].fields.final_falla;
+                            costo[count]=array[i].fields.costo;
+                            orden[count]=array[i].pk;
+                            //array_filter[count]=array[i];
+                            if (count>0){
+                              // var fecha3 = moment(fecha_fin[count-1]);
+                              // var fecha4 = moment(fecha_ini[count]);
+                              // fecha_ini_up[count]=((fecha4.diff(fecha3, 'seconds'))/(86400));
+                              var day3 = new Date(fecha_fin[count-1]); 
+                              var day4 = new Date(fecha_ini[count]);
+                              fecha_ini_up[count]= (Math.abs(day4-day3))/(1000 * 3600 * 24);
+                            }
+                            else{
+                              fecha_ini_up[count]=1;
+                            }
+                            // var fecha5 = moment(fecha_fin[count]);
+                            // var fecha6 = moment(fecha_ini[count]);
+                            // fecha_fin_down[count]=((fecha6.diff(fecha5, 'seconds')*(-1))/(86400));
+                            var day5 = new Date(fecha_fin[count]); 
+                            var day6 = new Date(fecha_ini[count]);
+                            fecha_fin_down[count]= (Math.abs(day6-day5))/(1000 * 3600 * 24);
+                            sum_up += fecha_ini_up[count];
+                            sum_down += fecha_fin_down[count];
+                            costo_total +=costo[count];
+                            document.querySelector('#v_up'+orden[count]).textContent=fecha_ini_up[count].toFixed(2);
+                            document.querySelector('#v_down'+orden[count]).textContent=fecha_fin_down[count].toFixed(2);
+                            count ++;
+
+                        }
+                  }
+                  max_fin = fecha_fin[count-1]
+                  min_ini = fecha_ini[count-count];
+                  n_fallas =count;
+                  max = Math.max(...fecha_ini_up);
+                  // var fecha1 = moment(max_fin);
+                  // var fecha2 = moment(min_ini);
+                  // TTF=fecha2.diff(fecha1, 'days')*(-1);
+                  var day1 = new Date(min_ini); 
+                  var day2 = new Date(max_fin);
+                  var difference= Math.abs(day2-day1);
+                  TTF = difference/(1000 * 3600 * 24)
+                  años=TTF/365;
+                  MTBF=TTF/n_fallas;
+                  MTTR=sum_down/n_fallas;
+                  MTTF=sum_up/n_fallas;
+                  tasa_falla=1/MTBF;
+                  tasa_repa=1/MTTR;
+                  CO=(Math.exp(-tasa_falla*max))*(100);
+                  DO=((MTTF)/(MTTF+MTTR))*(100);
+                  M=(1-Math.exp(-tasa_repa*2))*(100);
+
+                  for (i=0;i<26;i++){
+                    if (count2==0){
+                      CT[count2]=(Math.exp(-tasa_falla*1))*(100);
+                      PF[count2]=100-CT[count2];
+                      count2++;
+                      count3=count3+5;
+                    }
+                    else{
+                      CT[count2]=(Math.exp(-tasa_falla*count3))*(100);
+                      PF[count2]=100-CT[count2];
+                      count2++;
+                      count3=count3+5;
+                    }
+                    document.getElementById('ct'+i).textContent=CT[i].toFixed(2)+' %';
+                    document.getElementById('pf'+i).textContent=PF[i].toFixed(2)+' %';
+
+                  }
+                  
+
+                  {% comment %}
+                  console.log(array_filter);
+                  console.log('CT: '+CT);
+                  console.log('PF: '+PF);
+
+                  console.log('UPTIME PRUEBA: '+fecha_ini_up);
+                  console.log('DOWNTIME PRUEBA: '+fecha_fin_down);
+                  console.log('UPTIME: '+sum_up);
+                  console.log('DOWNTIME: '+sum_down);
+                  console.log('COSTO TOTAL: '+costo_total);
+                  console.log('Max FIN: '+max_fin);
+                  console.log('Min INI: '+min_ini);
+                  console.log('Nº de fallas: '+n_fallas);
+                  console.log('TTF: '+TTF);
+                  console.log('AÑOS: '+años);
+                  console.log('MTBF: '+MTBF);
+                  console.log('MTTR: '+MTTR);
+                  console.log('MTTF: '+MTTF);
+                  console.log('TASA DE FALLO: '+tasa_falla);
+                  console.log('TASA DE REPARACIÓN: '+tasa_repa);
+                  console.log('CONFIABILIDAD OPERACIONAL: '+CO);
+                  console.log('DISPONIBILIDAD OPERACIONAL: '+DO);
+                  console.log('MANTENIBILIDAD: '+M);
+
+                  console.log('FECHAS INI: '+fecha_ini);
+                  console.log('FECHAS FIN: '+fecha_fin);
+                  {% endcomment %}
+
+                  //$("#res").append("<a href={% url 'form_resultPr' %}?lang="+URLfilter[1]+">VER RESULTADOS</a>");  
+                  $("#res").append("<a href={% url 'form_resultPr' %}?lang="+URLfilter[1]+"><img src='{% static 'iconos/guardar.png' %}' title='Guardar Resultados'></a>");  
+                  $("#filtrar").append("<a href={% url 'filtrar_confiabilidad' %}?lang="+URLfilter[1]+"><img src='{% static 'iconos/lupa.png' %}' title='Filtrar por Fechas'></a>");  
+                  $("#PDF").append("<a href={% url 'reporte_confiabilidad' %}?lang="+URLfilter[1]+"><img src='{% static 'iconos/pdf.png' %}' title='PDF'></a>");  
+
+                  document.getElementById('up').textContent=sum_up.toFixed(2);
+                  document.getElementById('down').textContent= sum_down.toFixed(2);     
+                  document.getElementById('costo_total').textContent=costo_total.toFixed(2);
+                  document.getElementById('fallas').textContent= n_fallas; 
+                  document.getElementById('años').textContent=años.toFixed(1);
+                  document.getElementById('TTF').textContent= TTF.toFixed(2); 
+                  document.getElementById('MTBF').textContent=MTBF.toFixed(2);
+                  document.getElementById('MTTR').textContent= MTTR.toFixed(2); 
+                  document.getElementById('MTTF').textContent=MTTF.toFixed(2);
+                  document.getElementById('TF').textContent=tasa_falla.toFixed(2);
+                  document.getElementById('TR').textContent=tasa_repa.toFixed(2);
+                  document.getElementById('CO').textContent=CO.toFixed(2)+' %';
+                  document.getElementById('DO').textContent=DO.toFixed(2)+' %';
+                  document.getElementById('M').textContent=M.toFixed(2)+' %';
+                  document.getElementById('titulo').textContent= activo;   
+                  
+                  
+//GRÁFICAS
+
+// Obtener una referencia al elemento canvas del DOM
+const $grafica = document.querySelector("#grafica");
+const $grafica2 = document.querySelector("#grafica2");
+// Las etiquetas son las que van en el eje X. 
+const etiquetas = ["1", "5", "10", "15","20", "25", "30", "35","40", "45", "50", "55","60", "65", "70", "75", "80", "85", "90", "95", "100", "105", "110", "115", "120", "125"]
+// Podemos tener varios conjuntos de datos. Comencemos con uno
+const datosCT = {
+    label: "Confiabilidad en el tiempo",
+    data: CT, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
+    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color de fondo
+    borderColor: 'rgba(54, 162, 235, 1)', // Color del borde
+    borderWidth: 3,// Ancho del borde
+};
+const datosPF = {
+    label: "Probabilidad de falla",
+    data: PF, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
+    backgroundColor: 'rgba(255, 159, 64, 0.2)',// Color de fondo
+    borderColor: 'rgba(255, 159, 64, 1)',// Color del borde
+    borderWidth: 3,// Ancho del borde
+};
+new Chart($grafica, {
+    type: 'line',// Tipo de gráfica
+    data: {
+        labels: etiquetas,
+        datasets: [
+            datosCT,datosPF
+            // Aquí más datos...
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }],
+        },
+    }
+});
+// new Chart($grafica2, {
+//     type: 'bar',// Tipo de gráfica
+//     data: {
+//         labels: etiquetas,
+//         datasets: [
+//             datosCT,datosPF
+//             // Aquí más datos...
+//         ]
+//     },
+//     options: {
+//         scales: {
+//             yAxes: [{
+//                 ticks: {
+//                     beginAtZero: true
+//                 }
+//             }],
+//         },
+//     }
+// });
+
+
+// let accounts =array_filter
+// let busca = accounts.filter(n => n.fields.inicio_falla >= "2012-08-12" && n.fields.inicio_falla <= "2012-12-29")
+// console.log(busca)
+
+$( "#verlistado" ).click(function() {
+                verlistado();
+ });
+ $( "#verResultados" ).click(function() {
+                verResultados();
+ });
+ $( "#verConf" ).click(function() {
+                verConf();
+ });
+ $( "#verGrafica" ).click(function() {
+                verGrafica();
+ });
+
+function verlistado() {
+    var x = document.getElementById("listado");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function verResultados() {
+    var x = document.getElementById("resultados");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function verConf() {
+    var x = document.getElementById("conf");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function verGrafica() {
+    var x = document.getElementById("vgrafica");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+                }})
+                
+        })(jQuery);
+
+</script>
+{% endblock %}

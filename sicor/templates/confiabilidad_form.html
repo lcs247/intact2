@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-REGISTRO-FALLA</title>
+</head>
+{% endblock%}
+{% block content%}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <div class="page-section">
+        <div class="container">
+          <h1 class="text-center wow fadeInUp">Formulario de Registro de Fallas de Equipos</h1>
+          <form class="contact-form mt-5" action="" method="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Activo</label>
+                {{form.activo}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Tipo de Evento</label>
+                {{form.tipo}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Inicio de la Falla ({{form.inicio_falla.value}})</label>
+                {{form.inicio_falla}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label>Final de la Falla ({{form.final_falla.value}})</label>
+                {{form.final_falla}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Costo</label>
+                {{form.costo}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label for="subject">Descripción</label>
+                {{form.descripcion}}
+              </div>
+
+            </div>
+            <nav class="nav nav-pills nav-justified"> 
+              <a class="nav-item nav-link disabled" href="#"></a> 
+              <button type="submit" class="btn btn-primary wow zoomIn">Registrar</button>         
+              <a class="nav-item nav-link disabled" href='#'></a>
+              <a class="nav-item nav-link " href='{% url "confiabilidad_muestra" %}'><img src="{% static 'iconos/atras.png' %}" title="Atrás"></a> 
+              <a class="nav-item nav-link disabled" href='#'></a>
+            </nav>
+          </form>
+        </div>
+    </div>
+</form>
+{% endblock%}
+
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+  
+  var array=[];  
+  var URLsearch=[];
+  var URLfilter=[];
+  var array2=[];  
+  var URLsearch2=[];
+  var URLfilter2=[];
+  var array3=[];  
+  var valores=[];
+  var count=0;
+  var array_filter=[];
+  var tipo;
+  var valores2=[];
+  var fallas=[];
+  var nombres=[];
+  var array4=[];
+  var valores3=[];
+  var valores4=[];
+  var activo;
+  
+  URLsearch = window.location.search;
+  URLsearch2 = (window.location).toString();
+  URLfilter =(URLsearch).split("lang=");
+  URLfilter2 =(URLsearch2).split("/");
+  console.log(URLfilter);
+  console.log(URLfilter2);
+
+  if(URLfilter.length==2){
+  var form = $(this).closest("form");
+          $.ajax({
+            url: '{% url "buscar_listado_conf" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length;
+                 console.log(array);
+
+                 if (URLfilter.length>1){
+                  document.getElementById('actv').value = URLfilter[1]; 
+                 }
+                }})
+
+        
+                
+          $.ajax({
+            url: '{% url "vista_listado_activos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array2 =$.parseJSON(data.listado2);
+                 limite2=array2.length;
+                 console.log('ACTIVOS: ');
+                 console.log(array2);
+                 for (i=0;i<limite2;i++){
+                        valores[i]=array2[i].pk;
+                        if (valores[i]==URLfilter[1]){
+                          tipo=array2[i].fields.tipo
+                          console.log(tipo);
+                        }
+                  }
+                }})
+
+          $.ajax({
+            url: '{% url "vista_listado_tipos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array3 =$.parseJSON(data.listado);
+                 limite3=array3.length;
+                 console.log('FALLAS: ');
+                 console.log(array3);
+                 for (i=0;i<limite3;i++){
+                        valores2[i]=array3[i].pk;
+                        if (valores2[i]==tipo){
+                          fallas=array3[i].fields.falla;
+                        }
+                  }
+                  console.log('FALLAS FILTRADAS: ');
+                  console.log(fallas);
+                }})
+
+          $.ajax({
+            url: '{% url "vista_listado_tipos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array4 =$.parseJSON(data.listado2);
+                 limite4=array4.length;
+                 console.log('FALLAS NOMBRES: ');
+                 console.log(array4);
+                 for (i=0;i<limite4;i++){
+                  valores3[i]=array4[i].pk;
+                        if (valores3[i]==fallas[count]){
+                          nombres[count]=array4[i].fields.descripcion;
+                          count++;
+                        }
+                  }
+                 console.log('FALLAS MUESTRA: ');
+                 console.log(nombres);
+
+                 for (i=0;i<fallas.length;i++){
+                    $("#id_descripcion").append("<option value='"+nombres[i]+"'>"+nombres[i]+"</option>");  
+
+                    }
+                }})
+
+              }
+              if(URLfilter2.length==7){
+
+
+          var form = $(this).closest("form");
+          $.ajax({
+            url: '{% url "buscar_listado_conf" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length;
+                 console.log(array);
+                 for (i=0;i<limite;i++){
+                        valores4[i]=array[i].pk;
+                        if (valores4[i]==URLfilter2[5]){
+                          activo=array[i].fields.activo;
+                          console.log('nro_activo');
+                          console.log(activo);
+                        }
+                  }
+                }})
+
+        
+                
+          $.ajax({
+            url: '{% url "vista_listado_activos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array2 =$.parseJSON(data.listado2);
+                 limite2=array2.length;
+                 console.log('ACTIVOS: ');
+                 console.log(array2);
+
+                 for (i=0;i<limite2;i++){
+                        valores[i]=array2[i].pk;
+                        if (valores[i]==activo){
+                          tipo=array2[i].fields.tipo
+                          console.log(tipo);
+                        }
+                  }
+                }})
+
+          $.ajax({
+            url: '{% url "vista_listado_tipos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array3 =$.parseJSON(data.listado);
+                 limite3=array3.length;
+                 console.log('FALLAS: ');
+                 console.log(array3);
+                 for (i=0;i<limite3;i++){
+                        valores2[i]=array3[i].pk;
+                        if (valores2[i]==tipo){
+                          fallas=array3[i].fields.falla;
+                        }
+                  }
+                  console.log('FALLAS FILTRADAS: ');
+                  console.log(fallas);
+                }})
+
+          $.ajax({
+            url: '{% url "vista_listado_tipos" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array4 =$.parseJSON(data.listado2);
+                 limite4=array4.length;
+                 console.log('FALLAS NOMBRES: ');
+                 console.log(array4);
+                 for (i=0;i<limite4;i++){
+                  valores3[i]=array4[i].pk;
+                        if (valores3[i]==fallas[count]){
+                          nombres[count]=array4[i].fields.descripcion;
+                          count++;
+                        }
+                  }
+                 console.log('FALLAS MUESTRA: ');
+                 console.log(nombres);
+
+                 for (i=0;i<fallas.length;i++){
+                    $("#id_descripcion").append("<option value='"+nombres[i]+"'>"+nombres[i]+"</option>");  
+
+                    }
+                }})
+
+
+              }
+              
+
+
+        })(jQuery);
+</script>
+{% endblock %}

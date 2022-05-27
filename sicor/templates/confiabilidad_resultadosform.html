@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CONFIABILIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+
+<section class="ftco-section">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="table-wrap">
+
+                  <form action="" method="post" name="formul">
+                    {% csrf_token %}
+                    <br>
+                    <nav class="nav nav-pills nav-justified">   
+                        <h3 class="nav-item nav-link" style="background-color: green;color: white;">GUARDAR RESULTADOS</h3>          
+                    </nav>
+                    <br>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <center><h4><b>ACTIVO</b></h4></center>
+                      </tr>
+                      <tr>
+                        <center>{{form.activo}}</center>
+                      </tr>
+                      <tr>
+                        <th><center>UPTIME TOTAL (días)</center></th>
+                        <th><center>DOWNTIME TOTAL (días)</center></th>
+                        <th><center>COSTO TOTAL (USD)</center></th>
+                        <th><center>Nº FALLAS</center></th>
+                        <th><center>AÑOS</center></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                          <td><center >{{form.uptime_total}}</center></td>
+                          <td><center >{{form.downtime_total}}</center></td>
+                          <td><center >{{form.costo_total}}</center></td>
+                          <td><center >{{form.n_fallas}}</center></td>
+                          <td><center >{{form.años}}</center></td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+                  <br>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th><center>TIEMPO TOTAL DE FUNCIONAMIENTO (TTF)</center></th>
+                        <th><center>TIEMPO PROMEDIO ENTRE FALLAS (MTBF)</center></th>
+                        <th><center>TIEMPO PROMEDIO DE REPARACIÓN (MTTR)</center></th>
+                        <th><center>TIEMPO PROMEDIO FUNCIONAL (MTTF)</center></th>
+                        <th><center>TASA DE FALLA (λ)</center></th>
+                        <th><center>TASA DE REPARACIÓN (µ)</center></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                          <td><center>{{form.TTF}}</center></td>
+                          <td><center>{{form.MTBF}}</center></td>
+                          <td><center>{{form.MTTR}}</center></td>
+                          <td><center>{{form.MTTF}}</center></td>
+                          <td><center>{{form.T_falla}}</center></td>
+                          <td><center>{{form.T_reparacion}}</center></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <br>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+
+                        <th><center>CONFIABILIDAD OPERACIONAL</center></th>
+                        <th><center>DISPONIBILIDAD OPERACIONAL</center></th>
+                        <th><center>MANTENIBILIDAD</center></th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                          <td><center>{{form.CO}}</center></td>
+                          <td><center>{{form.DO}}</center></td>
+                          <td><center>{{form.Mantenibilidad}}</center></td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+                  <br>
+                  <nav class="nav nav-pills nav-justified"> 
+                    <a class="nav-item nav-link disabled" href="#"></a>
+                    <button type="submit" class="btn btn-primary wow zoomIn">GUARDAR</button>                            
+                    <a class="nav-item nav-link disabled" href='#'></a>
+                    <div><center id='res'><center></div> 
+                    <a class="nav-item nav-link disabled" href='#'></a>
+                   
+                  </nav>
+                  <br>
+
+                </form>
+              </div>
+          </div>
+      </div>
+      
+  </div>
+</section>
+
+{% endblock %}
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+  
+  var array=[];  
+  var valores=[]; //ID
+  var sum_up=0;
+  var sum_down=0;
+  var URLsearch=[];
+  var URLfilter=[];
+  var fecha_fin=[];
+  var fecha_fin_down=[];
+  var fecha_ini=[];
+  var fecha_ini_up=[];
+  var max_fin=0;
+  var min_ini=0;
+  var count=0;
+  var count2=0;
+  var count3=0;
+  var n_fallas=0;
+  var TTF=0;
+  var años=0;
+  var MTBF=0;
+  var MTTR=0;
+  var MTTF=0;
+  var tasa_falla=0;
+  var tasa_repa=0;
+  var activo;
+  var orden=[];
+  var CO=0;
+  var DO=0;
+  var M=0;
+  var max=0;
+  var costo=[];
+  var costo_total=0;
+  var CT=[];
+  var PF=[];
+  var array_filter=[];
+
+  var form = $(this).closest("form");
+          $.ajax({
+            url: '{% url "buscar_listado_conf" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length;
+                 {% comment %} console.log(array);  {% endcomment %}
+                 URLsearch = window.location.search;
+                 URLfilter =(URLsearch).split("?lang=")
+
+                 for (i=0;i<limite;i++){
+                        valores[i]=array[i].fields.activo;
+                        if (valores[i]==URLfilter[1]){
+                            activo=array[i].fields.nombre;
+                            fecha_ini[count]=array[i].fields.inicio_falla;
+                            fecha_fin[count]=array[i].fields.final_falla;
+                            costo[count]=array[i].fields.costo;
+                            orden[count]=array[i].pk;
+                            if (count>0){
+                              var day3 = new Date(fecha_fin[count-1]); 
+                              var day4 = new Date(fecha_ini[count]);
+                              fecha_ini_up[count]= (Math.abs(day4-day3))/(1000 * 3600 * 24);
+                            }
+                            else{
+                              fecha_ini_up[count]=1;
+                            }
+                            var day5 = new Date(fecha_fin[count]); 
+                            var day6 = new Date(fecha_ini[count]);
+                            fecha_fin_down[count]= (Math.abs(day6-day5))/(1000 * 3600 * 24);
+                            sum_up += fecha_ini_up[count];
+                            sum_down += fecha_fin_down[count];
+                            costo_total +=costo[count];
+                            count ++;
+
+                        }
+                  }
+                  max_fin = fecha_fin[count-1]
+                  min_ini = fecha_ini[count-count];
+                  n_fallas =count;
+                  max = Math.max(...fecha_ini_up);
+                  var day1 = new Date(min_ini); 
+                  var day2 = new Date(max_fin);
+                  var difference= Math.abs(day2-day1);
+                  TTF = difference/(1000 * 3600 * 24)
+                  años=TTF/365;
+                  MTBF=TTF/n_fallas;
+                  MTTR=sum_down/n_fallas;
+                  MTTF=sum_up/n_fallas;
+                  tasa_falla=1/MTBF;
+                  tasa_repa=1/MTTR;
+                  CO=(Math.exp(-tasa_falla*max))*(100);
+                  DO=((MTTF)/(MTTF+MTTR))*(100);
+                  M=(1-Math.exp(-tasa_repa*2))*(100);
+
+                  for (i=0;i<26;i++){
+                    if (count2==0){
+                      CT[count2]=(Math.exp(-tasa_falla*1))*(100);
+                      PF[count2]=100-CT[count2];
+                      count2++;
+                      count3=count3+5;
+                    }
+                    else{
+                      CT[count2]=(Math.exp(-tasa_falla*count3))*(100);
+                      PF[count2]=100-CT[count2];
+                      count2++;
+                      count3=count3+5;
+                    }
+                   // document.getElementById('ct'+i).textContent=CT[i].toFixed(2)+' %';
+                    //document.getElementById('pf'+i).textContent=PF[i].toFixed(2)+' %';
+
+                  }
+                  {% comment %}
+                  console.log('CT: '+CT);
+                  console.log('PF: '+PF);
+
+                  console.log('UPTIME PRUEBA: '+fecha_ini_up);
+                  console.log('DOWNTIME PRUEBA: '+fecha_fin_down);
+                  console.log('UPTIME: '+sum_up);
+                  console.log('DOWNTIME: '+sum_down);
+                  console.log('COSTO TOTAL: '+costo_total);
+                  console.log('Max FIN: '+max_fin);
+                  console.log('Min INI: '+min_ini);
+                  console.log('Nº de fallas: '+n_fallas);
+                  console.log('TTF: '+TTF);
+                  console.log('AÑOS: '+años);
+                  console.log('MTBF: '+MTBF);
+                  console.log('MTTR: '+MTTR);
+                  console.log('MTTF: '+MTTF);
+                  console.log('TASA DE FALLO: '+tasa_falla);
+                  console.log('TASA DE REPARACIÓN: '+tasa_repa);
+                  console.log('CONFIABILIDAD OPERACIONAL: '+CO);
+                  console.log('DISPONIBILIDAD OPERACIONAL: '+DO);
+                  console.log('MANTENIBILIDAD: '+M);
+
+                  console.log('FECHAS INI: '+fecha_ini);
+                  console.log('FECHAS FIN: '+fecha_fin);
+                  {% endcomment %}
+
+
+                  document.getElementById('up').value=sum_up.toFixed(2);
+                  document.getElementById('down').value= sum_down.toFixed(2);     
+                  document.getElementById('costo_total').value=costo_total.toFixed(2);
+                  document.getElementById('fallas').value= n_fallas; 
+                  document.getElementById('años').value=años.toFixed(1);
+                  document.getElementById('TTF').value= TTF.toFixed(2); 
+                  document.getElementById('MTBF').value=MTBF.toFixed(2);
+                  document.getElementById('MTTR').value= MTTR.toFixed(2); 
+                  document.getElementById('MTTF').value=MTTF.toFixed(2);
+                  document.getElementById('TF').value=tasa_falla.toFixed(2);
+                  document.getElementById('TR').value=tasa_repa.toFixed(2);
+                  document.getElementById('CO').value=CO.toFixed(2);
+                  document.getElementById('DO').value=DO.toFixed(2);
+                  document.getElementById('M').value=M.toFixed(2);
+                  document.getElementById('actv').value = URLfilter[1];
+                  $("#res").append("<a class='nav-item nav-link ' href='{% url 'detalle_confiabilidad' %}?lang="+URLfilter[1]+"'><img src='{% static 'iconos/atras.png' %}' title='Atrás'></a>" );  
+                  
+                }})
+ 
+        })(jQuery);
+
+</script>
+{% endblock %}

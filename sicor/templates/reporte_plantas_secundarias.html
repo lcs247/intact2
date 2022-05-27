@@ -1,0 +1,300 @@
+<style>
+    body {
+    background: rgb(204,204,204); 
+  }
+  page {
+    background: white;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 0.5cm;
+    box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+  }
+  page[size="A4"] {  
+    width: 30cm;
+    height: auto; 
+  }
+  page[size="A4"][layout="landscape"] {
+    width: 29.7cm;
+    height: 21cm;  
+  }
+  @media print {
+      body, page {
+        box-shadow: 0;
+        size: 210mm 297mm;
+        margin: 5mm 5mm 5mm 5mm;
+        orphans: 0;
+        widows: 0;
+      }
+      .formulario {
+         zoom:80%;
+      }
+      .formulario:nth-child(even) { 
+          page-break-inside: avoid;
+          page-break-after: always;
+      }
+    }
+  </style>
+  <page size="A4">
+    {% extends 'base.html' %}
+    {% load static %}
+    {% block title%}
+    <head>
+      <title>REPORTE-PLANTAS-SECUNDARIAS</title>
+    </head>
+    {% endblock%}
+    {% block header %}
+    {% endblock%}
+    {% block content%}
+
+    <div id="area_de_impresion">
+    <br>
+    <section class="ftco-section">
+        <div class="container">
+          <div class="formulario">
+            <table border="1" style="width: 100%;height: 200px;">
+              <tr style="height: 100%;width: max-content;">
+                <th style="background-color: white;color: white;width: 35%;"><center><img id="logo" src="" style="height: 100%;width:100%"></center></th>               
+                <th style="background-color: rgb(255, 255, 255);color: black;width: 65%"><center><h1 style=" font-weight: bold">REPORTE DE ACTIVOS</h1></center></th>               
+              </tr>
+            </table>
+                    <br>
+                    <table border="1" style="width: 100%">
+                      <TR style="height: 20px;width: max-content">
+                        <TH style="width: 20%;">FECHA: </TH>
+                        <TD align="CENTER" id='fecha_actual' style="width: 80%;"></TD>
+                    </TR>
+                    <TR style="height: 20px;width: max-content">
+                      <TH style="width: 20%;">EMPRESA: </TH>
+                      <TD align="CENTER" id="empresa" style="width: 80%;"></TD>
+                  </TR>
+                  <TR style="height: 20px;width: max-content">
+                    <TH style="width: 20%;">DIRECCIÓN: </TH>
+                    <TD align="CENTER" id="direccion" style="width: 80%;"></TD>
+                  </TR>
+                  <TR style="height: 20px;width: max-content">
+                    <TH style="width: 20%;">E-MAIL: </TH>
+                    <TD align="CENTER" id="email" style="width: 80%;"></TD>
+                </TR>
+                    </table>
+                    <br>
+                    <table style="width: 100%">
+                      <tr style="height: max-content;width: max-content;">
+                        <th><h1 style="color: red;font-weight: bold;font-size:30px;"><center>{% for confpr in confspr %}{% if forloop.last %}{{confpr.planta_secundaria.codigo}} - {{confpr.planta_secundaria.nombre}} {% endif %}{% endfor %}</center></h1></th>               
+                      </tr>
+                    </table>
+                    <br>
+                    {% if confspr %}
+                    <table style="width: 100%">
+                      <tr style="height: max-content;width: max-content;">
+                          <th style="background-color:rgb(255, 255, 255);width: 15%;">
+                            <h3 style="background-color: rgb(255, 255, 255);color: black;height: auto;font-weight: bold"><center>LISTADO DE ACTIVOS PRINCIPALES</center></h3>          
+                          </th>               
+                      </tr>
+                    </table> 
+                    <br>
+                    <table border="1" style="width: 100%">
+                        <thead>
+                          <tr>
+                              <th style="font-size:10px"><center>NRO.</center></th>
+                              <th style="font-size:10px"><center>TAG</center></th>
+                              <th style="font-size:10px"><center>NOMBRE</center></th>
+                              <th style="font-size:10px"><center>PLANTA PRINCIPAL</center></th>
+                              <!-- <th style="font-size:10px"><center>PLANTA SECUNDARIA</center></th> -->
+                              <th style="font-size:10px"><center>SISTEMA</center></th>
+                              <th style="font-size:10px"><center>SUBSISTEMA</center></th>
+                              <th style="font-size:10px"><center>TIPO</center></th> 
+                              <th style="font-size:10px"><center>MARCA/ MODELO</center></th> 
+                              <th style="font-size:10px"><center>SERIE</center></th> 
+                              <th style="font-size:10px"><center>CAPACIDAD DE DISEÑO/ OPERATIVA</center></th> 
+                              <th style="font-size:10px"><center>FECHA DE INSTALACIÓN</center></th> 
+                              <th style="font-size:10px"><center>FECHA ÚLTIMO MANTENIMIENTO INTEGRAL</center></th> 
+                              <th style="font-size:10px"><center>ESTADO OPERATIVO</center></th> 
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for confpr in confspr %}
+                        <tr>
+                            <td style="font-size:10px"><center>{{ forloop.counter }}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.codigo}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.nombre}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.planta.nombre}}</center></td>
+                            <!-- <td style="font-size:10px"><center>{{confpr.planta_secundaria.nombre}}</center></td> -->
+                            <td style="font-size:10px"><center>{{confpr.sistema.nombre}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.subsistema.nombre}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.tipo}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.marca}} / {{confpr.modelo}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.serie}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.capacidad}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.año}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.fu_mantenimiento}}</center></td>
+                            <td style="font-size:10px"><center>{{confpr.estado}}</center></td>
+                        </tr>
+                            {% endfor %}
+                        </tbody>
+                     </table>
+                     <div align="right"style="font-size:10px">O (OPERATIVO) - F (FUERA DE SERVICIO)</div>
+                     <br>
+                     {% else %}
+                     <table style="width: 100%">
+                        <tr style="height: max-content;width: max-content;">
+                          <th><h1 style="color: red;font-weight: bold;font-size:30px;"><center id="titulo"></center></h1></th>               
+                        </tr>
+                      </table>
+                      <br>
+
+                     {% endif %}
+                     <div id="secundarios_bloque" style="display: none;">
+                     <table style="width: 100%">
+                      <tr style="height: max-content;width: max-content;">
+                          <th style="background-color:rgb(255, 255, 255);width: 15%;">
+                            <h3 style="background-color: rgb(255, 255, 255);color: black;height: auto;font-weight: bold"><center>LISTADO DE ACTIVOS SECUNDARIOS</center></h3>          
+                          </th>               
+                      </tr>
+                    </table> 
+                    <br>
+                    <table border="1" style="width: 100%">
+                      <thead>
+                        <tr>
+                            <th style="font-size:10px"><center>NRO.</center></th>
+                            <th style="font-size:10px"><center>TAG</center></th>
+                            <th style="font-size:10px"><center>NOMBRE</center></th>
+                            <th style="font-size:10px"><center>PLANTA PRINCIPAL</center></th>
+                            <!-- <th style="font-size:10px"><center>PLANTA SECUNDARIA</center></th> -->
+                            <th style="font-size:10px"><center>SISTEMA</center></th>
+                            <th style="font-size:10px"><center>SUBSISTEMA</center></th>
+                            <th style="font-size:10px"><center>EQUIPO PRINCIPAL</center></th>
+                            <th style="font-size:10px"><center>TIPO</center></th> 
+                            <th style="font-size:10px"><center>MARCA/ MODELO</center></th> 
+                            <th style="font-size:10px"><center>SERIE</center></th> 
+                            <th style="font-size:10px"><center>CAPACIDAD DE DISEÑO/ OPERATIVA</center></th> 
+                            <th style="font-size:10px"><center>FECHA DE INSTALACIÓN</center></th> 
+                            <th style="font-size:10px"><center>FECHA ÚLTIMO MANTENIMIENTO INTEGRAL</center></th> 
+                            <th style="font-size:10px"><center>ESTADO OPERATIVO</center></th> 
+                        </tr>
+                      </thead>
+                      <tbody id="datos">
+
+                     </tbody>
+                   </table>
+                   <div align="right"style="font-size:10px">O (OPERATIVO) - F (FUERA DE SERVICIO)</div>
+                  </div>
+                   <br>
+                  </div>
+                  <br>
+                    <table style="width: 100%">
+                      <center><a id="btn_print"><img src="{% static 'iconos/reporte3.png' %}" title='REPORTE PDF'></a></center>
+                    </table>
+                    <br>
+      </div>
+    </section>
+    </div>
+
+    {% endblock%}
+    
+    {% block javascript %}
+    
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script language="javascript">
+    
+    var hoy;
+    var valores=[];
+    var count=0;
+    var array_filter=[];
+    var orden=[];
+
+    (function($) {
+
+
+      var form = $(this).closest("form");
+          $.ajax({
+            url: '{% url "reporte_listado_plantas_secundarias" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length;
+                 URLsearch = window.location.search;
+                 URLfilter =(URLsearch).split("?lang=")
+                 for (i=0;i<limite;i++){
+                        valores[i]=array[i].fields.planta_secundaria;
+                        if (valores[i]==URLfilter[1]){
+                            array_filter[count]=array[i];
+                            orden[count]=array_filter[count].pk;
+                            count ++;
+                        }
+                     }
+                 limite2=array_filter.length; 
+                 for (i=0;i<limite2;i++){
+                  document.getElementById("secundarios_bloque").style.display = "block";
+                  $("#datos").append("<tr><td style='font-size:10px'><center id='nro"+i+"'</center></td><td style='font-size:10px'><center id='tag"+i+"'></center></td><td style='font-size:10px'><center id='nombre"+i+"'></center></td><td style='font-size:10px'><center id='plantap"+i+"'></center></td><td style='font-size:10px'><center id='sis"+i+"'></center></td><td style='font-size:10px'><center id='sub"+i+"'></center></td><td style='font-size:10px'><center id='equippr"+i+"'></center></td><td style='font-size:10px'><center id='tipo"+i+"'></center></td><td style='font-size:10px'><center id='marca"+i+"'></center></td><td style='font-size:10px'><center id='serie"+i+"'></center></td><td style='font-size:10px'><center id='capacidad"+i+"'></center></td><td style='font-size:10px'><center id='fins"+i+"'></center></td><td style='font-size:10px'><center id='fumi"+i+"'></center></td><td style='font-size:10px'><center id='estado"+i+"'></center></td></tr>");  
+                  document.getElementById('nro'+i).textContent=i+1;
+                  document.getElementById('tag'+i).textContent=array_filter[i].fields.codigo;
+                  document.getElementById('nombre'+i).textContent=array_filter[i].fields.nombre;
+                  document.getElementById('plantap'+i).textContent=array_filter[i].fields.planta_name;
+                  // document.getElementById('plantas'+i).textContent=array_filter[i].fields.planta_secundaria_name;
+                  document.getElementById('sis'+i).textContent=array_filter[i].fields.sistema_name;
+                  document.getElementById('sub'+i).textContent=array_filter[i].fields.subsistema_name;
+                  document.getElementById('equippr'+i).textContent=array_filter[i].fields.equipo_principal_name;
+                  document.getElementById('tipo'+i).textContent=array_filter[i].fields.tipo_name;
+                  document.getElementById('marca'+i).textContent=array_filter[i].fields.marca+"/"+array_filter[i].fields.modelo;
+                  document.getElementById('serie'+i).textContent=array_filter[i].fields.serie;
+                  document.getElementById('capacidad'+i).textContent=array_filter[i].fields.capacidad;
+                  document.getElementById('fins'+i).textContent=array_filter[i].fields.año;
+                  document.getElementById('fumi'+i).textContent=array_filter[i].fields.fu_mantenimiento;
+                  document.getElementById('estado'+i).textContent=array_filter[i].fields.estado;
+
+
+                  }
+                     document.getElementById('titulo').textContent=array_filter[0].fields.planta_secundaria_name;
+
+            
+                }})
+
+//INFORMACIÓN DE LA FECHA
+
+      tiempoTranscurrido = Date.now();
+      hoy = new Date(tiempoTranscurrido);
+      document.getElementById('fecha_actual').textContent= hoy.toLocaleDateString(); 
+        //HACER PDF
+        // Escuchamos el click del botón
+      $(document).ready(function($) 
+      { 
+        function imprim1(){
+          window.print();
+        }
+        $("#btn_print").on('click', function(event) 
+        {
+          imprim1();       
+        });
+        
+     
+        });
+
+
+        //INFORMACIÓN DEL ENCABEZADO
+
+        $.ajax({
+            url: '{% url "vista_listado_configReport" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array2 =$.parseJSON(data.listado);
+
+                 document.getElementById('empresa').textContent=array2[0].fields.empresa;
+                 document.getElementById('direccion').textContent=array2[0].fields.direccion;
+                 document.getElementById('email').textContent=array2[0].fields.email;
+                 $("#logo").attr("src","{{ MEDIA_URL }}"+array2[0].fields.logo);
+
+                }})
+     
+         })(jQuery);
+    
+    </script>
+    {% endblock %}
+    {% block footer %}
+    {% endblock %}
+  
+  
+  
+  
+  </page>

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-FALLAS FUNCIONALES</title>
+</head>
+{% endblock%}
+{% block content%}
+<div class="page-section">
+    <div class="container">
+      <h1 class="text-center wow fadeInUp">Registro de Fallas Funcionales</h1>
+      <form class="contact-form mt-5" action="" method="post">
+        {% csrf_token %}
+        <div class="row mb-3">
+          <div class="col-sm-6 py-2 wow fadeInLeft">
+            <label >Código</label>
+            {{form.codigo}}
+          </div>
+          <div class="col-sm-6 py-2 wow fadeInRight">
+            <label >Descripción</label>
+            {{form.descripcion}}
+          </div>
+          <div class="col-12 py-2 wow fadeInUp">
+            <label >Calificación de Falla</label>
+            {{form.calificacion}}
+          </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+          <button type="submit" class="btn btn-primary wow zoomIn">Registrar</button>
+          <a class="nav-item nav-link disabled" href="#"></a>          
+          <a class="nav-item nav-link disabled" href='#'></a>
+          <a class="nav-item nav-link disabled" href='#'></a>
+          <a class="nav-item nav-link " href='{% url "fallas_muestra" %}'><img src="{% static 'iconos/atras.png' %}" title="Atrás"></a> 
+        </nav>  
+      </form>
+    </div>
+</div>
+{% endblock%}

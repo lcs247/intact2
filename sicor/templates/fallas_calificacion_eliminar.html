@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<div class="page-section">
+    <div class="container">
+        <form action="" method="post">
+            {% csrf_token %}
+            <h3 class="heading-section">¿Desea eliminar el registro de {{object.descripcion}}?</h3>
+            <button type="submit"  class="btn btn-primary wow zoomIn">Sí, eliminar.</button>
+            <a href='{% url "fallas_calificacion_muestra" %}'>Cancelar</a>   
+        </form>
+    </div>
+</div>
+
+
+
+{% endblock%}

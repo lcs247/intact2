@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-REGISTRO-CRITICIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <div class="page-section">
+        <div class="container">
+          <h1 class="text-center wow fadeInUp">Formulario de Registro de Criticidad de Equipos Principales</h1>
+          <form class="contact-form mt-5" action="" method="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col-12 py-2 wow fadeInDown">
+                <label>Parametrización</label>
+                {{form.categoria}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Activo</label>
+                {{form.activo}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Redundancia</label>
+                {{form.r}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label>Ocurrencia (<strong id="nro_fallas"></strong>)&nbsp;&nbsp;</label><a id="actualizar"><img src="{% static 'iconos/actualizar.png' %}" title="ACTUALIZAR"></a>
+                {{form.ocurrencia}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Seguridad y Salud</label>
+                {{form.segysa}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Nro. de Fallas</label>
+                {{form.fallas}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label>Medio Ambiente</label>
+                {{form.md}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label>Costo de Mantenimiento</label>
+                {{form.cm}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label>Pérdida de Producción</label>
+                {{form.pp}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Exposición</label>
+                {{form.ex}}
+              </div>
+
+            </div>
+            <nav class="nav nav-pills nav-justified"> 
+              <a class="nav-item nav-link disabled" href="#"></a>  
+              <button type="submit" class="btn btn-primary wow zoomIn">Registrar</button>        
+              <a class="nav-item nav-link disabled" href='#'></a>
+              <a class="nav-item nav-link " href='{% url "criticidad_muestra_CPr" %}'><img src="{% static 'iconos/atras.png' %}" title="ATRÁS"></a> 
+              <a class="nav-item nav-link disabled" href='#'></a>
+            </nav>
+          </form>
+        </div>
+    </div>
+</form>
+
+<script language="javascript">
+
+
+//window.onload = function() {calcu()};
+
+  (function($) {
+    
+    var array=[];
+    var valores=[];
+    var n_fallas;
+    var count=0;
+    var filtrado=[];
+    var lmin;
+    var lsup;
+    var form = $(this).closest("form");
+  
+            $.ajax({
+              url: '{% url "buscar_listado_conf" %}',
+              data: form.serialize(),
+              dataType: 'json',
+              success: function (data) {
+                   array =$.parseJSON(data.listado);
+                   limite=array.length;
+                   document.getElementById("activo").onchange = function() {calcu()};
+                   document.getElementById("actualizar").onclick = function() {calcu()};
+
+                     for (i=0;i<limite;i++){
+                        valores[i]=array[i].fields.activo;
+                        if (valores[i]==activo){
+                            count ++;
+                        }
+                      }
+
+                   function calcu(){
+                     count=0;
+                     filtrado=[];
+                     var selector=document.querySelector("#activo");
+                     var activo = selector.options[selector.selectedIndex].value;
+
+                     for (i=0;i<limite;i++){
+                        valores[i]=array[i].fields.activo;
+                        if (valores[i]==activo){
+                            count ++;
+                        }
+                      }
+                      $.ajax({
+                        url: '{% url "vista_listado_ocurrenciasSec" %}',
+                        data: form.serialize(),
+                        dataType: 'json',
+                        success: function (data) {
+                        array2 =$.parseJSON(data.listado);
+                        limite2=array.length;
+
+                        for (i=0;i<limite2;i++){
+                          lmin=array2[i].fields.rango_menor;
+                          lsup=array2[i].fields.rango_mayor;
+                          if (count>=lmin && count<=lsup){
+                            document.getElementById('ocurrencia').value = array2[i].pk;
+                            document.getElementById('nro_fallas').textContent = 'Nro. de Fallas Registradas: '+count;                          
+                            document.getElementById('id_fallas').value = count;                          
+
+                          }
+                        }                     
+                        
+                      }})
+
+                    }
+              }})
+  
+          })(jQuery);
+  
+  </script>
+{% endblock%}

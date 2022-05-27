@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-REGISTRO-CRITICIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <div class="page-section">
+        <div class="container">
+          <h1 class="text-center wow fadeInUp">Formulario de Registro de Criticidad de Equipos</h1>
+          <form class="contact-form mt-5" action="" method="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Activo</label>
+                {{form.activo}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >¿Es parte de un proceso operativo?</label>
+                {{form.po}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label>¿Es parte de un sistema?</label>
+                {{form.ps}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >¿Se ha producido alguna una falla en el último año?</label>
+                {{form.fua}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label for="subject">¿Su pérdida de función puede producir afectación económica?</label>
+                {{form.pe}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >¿Su pérdida de función puede producir afectación a la salud del personal?</label>
+                {{form.sh}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label for="subject">¿Su pérdida de función puede producir afectación al medio ambiente?</label>
+                {{form.ma}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Redundancia</label>
+                {{form.r}}
+              </div>
+            </div>
+            <nav class="nav nav-pills nav-justified"> 
+              <button type="submit" class="btn btn-primary wow zoomIn">Registrar</button>
+              <a class="nav-item nav-link disabled" href="#"></a>          
+              <a class="nav-item nav-link disabled" href='#'></a>
+              <a class="nav-item nav-link disabled" href='#'></a>
+              <a class="nav-item nav-link " href='{% url "criticidad_muestra" %}'><img src="{% static 'iconos/atras.png' %}" title="Atrás"></a> 
+            </nav>
+          </form>
+        </div>
+    </div>
+</form>
+{% endblock%}

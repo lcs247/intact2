@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-REGISTRO-CRITICIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <div class="page-section">
+        <div class="container">
+          <h1 class="text-center wow fadeInUp">Formulario de Registro de Categoría de Riesgo</h1>
+          <form class="contact-form mt-5" action="" method="post">
+            {% csrf_token %}
+            <br>
+            <nav class="nav nav-pills nav-justified"> 
+                <a class="nav-item nav-link disabled" style="background:rgb(0, 255, 42)" href="#" id="aceptable_name">V1<b></b></a>          
+                <a class="nav-item nav-link disabled" style="background:rgb(123, 255, 0)" href="#" id="moderado_name">V2<b></b></a>
+                <a class="nav-item nav-link disabled" style="background:rgb(217, 255, 0)" href='#' id="medio_name"><b>V3</b></a>
+                <a class="nav-item nav-link disabled" style="background:rgb(255, 102, 0)" href="#" id="alto_name"><b>V4</b></a>
+                <a class="nav-item nav-link disabled" style="background:#ff0000" href="#" id="into_name"><b>V5</b></a>
+            </nav>
+            <nav class="nav nav-pills nav-justified"> 
+              <a class="nav-item nav-link disabled" href="#"><b id="aceptable">V1</b></a>  
+              <a class="nav-item nav-link disabled" href='#'><b></b></a>
+              <a class="nav-item nav-link disabled" href="#"><b id="moderado">V2</b></a>
+              <a class="nav-item nav-link disabled" href='#'><b></b></a>          
+              <a class="nav-item nav-link disabled" href='#'><b id="medio">V3</b></a>
+              <a class="nav-item nav-link disabled" href='#'><b></b></a>
+              <a class="nav-item nav-link disabled" href='#'><b></b></a>
+              <a class="nav-item nav-link disabled" href="#"><b id="alto">V4</b></a>
+              <a class="nav-item nav-link disabled" href='#'><b></b></a>
+              <a class="nav-item nav-link disabled" href="#"><b id="intolerable">V5</b></a>
+              <a class="nav-item nav-link disabled" href='#'><b></b></a>
+              <a class="nav-item nav-link disabled" href="#"><b></b></a>
+          </nav>
+          <br> 
+            <div class="row mb-3">
+              <div class="col-12 py-2 wow fadeInDown">
+                <label>Descripción de las categorías</label>
+                {{form.descripcion}}
+              </div> 
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Descripción de V5</label>
+                {{form.into_name}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Valor de V5</label>
+                {{form.intolerable}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Descripción de V4</label>
+                {{form.alto_name}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Valor de V4</label>
+                {{form.alto}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Descripción de V3</label>
+                {{form.medio_name}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Valor de V3</label>
+                {{form.medio}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Descripción de V2</label>
+                {{form.moderado_name}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Valor de V2</label>
+                {{form.moderado}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInLeft">
+                <label >Descripción de V1</label>
+                {{form.aceptable_name}}
+              </div>
+              <div class="col-sm-6 py-2 wow fadeInRight">
+                <label >Valor de V1</label>
+                {{form.aceptable}}
+              </div>
+              </div>
+              <nav class="nav nav-pills nav-justified"> 
+                <button type="submit" class="btn btn-primary wow zoomIn">Registrar</button>
+                <a class="nav-item nav-link disabled" href="#"></a>          
+                <a class="nav-item nav-link disabled" href='#'></a>
+                <a class="nav-item nav-link disabled" href='#'></a>
+                <a class="nav-item nav-link " href='{% url "criticidad_conf" %}'><img src="{% static 'iconos/atras.png' %}" title="Atrás"></a> 
+              </nav>
+          </form>
+        </div>
+    </div>
+</form>
+{% endblock%}

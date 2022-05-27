@@ -1,0 +1,193 @@
+<style>
+  body {
+  background: rgb(204,204,204); 
+}
+page {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+page[size="A4"] {  
+  width: 30cm;
+  height: auto; 
+}
+page[size="A4"][layout="landscape"] {
+  width: 29.7cm;
+  height: 21cm;  
+}
+@media print {
+    body, page {
+      box-shadow: 0;
+      size: 250mm 310mm;
+      margin: 1mm 1mm 1mm 1mm;
+      orphans: 0;
+      widows: 0;
+    }
+    .formulario {
+       zoom:100%;
+    }
+    .formulario:nth-child(even) { 
+        page-break-inside: avoid;
+        page-break-after: always;
+    }
+  }
+</style>
+<page size="A4">
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title%}
+  <head>
+    <title>REPORTE-ACTIVOS-SECUNDARIOS</title>
+  </head>
+  {% endblock%}
+  {% block header %}
+  {% endblock%}
+  {% block content%}
+  <div id="area_de_impresion">
+  <br>
+  <section class="ftco-section">
+      <div class="container">
+        <div class="formulario">
+          <table border="1" style="width: 100%;height: 200px;">
+            <tr style="height: 100%;width: max-content;">
+              <th style="background-color: white;color: white;width: 35%;"><center><img id="logo" src="" style="height: 100%;width:100%"></center></th>               
+              <th style="background-color: rgb(255, 255, 255);color: black;width: 65%"><center><h1 style=" font-weight: bold">REPORTE DE ACTIVOS</h1></center></th>               
+            </tr>
+          </table>
+                  <br>
+                  <table border="1" style="width: 100%">
+                    <TR style="height: 20px;width: max-content">
+                      <TH style="width: 20%;">FECHA: </TH>
+                      <TD align="CENTER" id='fecha_actual' style="width: 80%;"></TD>
+                  </TR>
+                  <TR style="height: 20px;width: max-content">
+                    <TH style="width: 20%;">EMPRESA: </TH>
+                    <TD align="CENTER" id="empresa" style="width: 80%;"></TD>
+                </TR>
+                <TR style="height: 20px;width: max-content">
+                  <TH style="width: 20%;">DIRECCIÓN: </TH>
+                  <TD align="CENTER" id="direccion" style="width: 80%;"></TD>
+                </TR>
+                <TR style="height: 20px;width: max-content">
+                  <TH style="width: 20%;">E-MAIL: </TH>
+                  <TD align="CENTER" id="email" style="width: 80%;"></TD>
+              </TR>
+                  </table>
+                  <br>
+                  <table style="width: 100%">
+                    <tr style="height: max-content;width: max-content;">
+                      <th><h1 style="color: red;font-weight: bold;font-size:30px;"><center id="titulo">LISTA DE ACTIVOS SECUNDARIOS</center></h1></th>               
+                    </tr>
+                  </table>
+                  <br>
+                  <table border="1" style="width: 100%">
+                      <thead>
+                        <tr>
+                            <th style="font-size:10px"><center>NRO.</center></th>
+                            <th style="font-size:10px"><center>TAG</center></th>
+                            <th style="font-size:10px"><center>NOMBRE</center></th>
+                            <th style="font-size:10px"><center>PLANTA PRINCIPAL</center></th>
+                            <th style="font-size:10px"><center>PLANTA SECUNDARIA</center></th>
+                            <th style="font-size:10px"><center>SISTEMA</center></th>
+                            <th style="font-size:10px"><center>SUBSISTEMA</center></th>
+                            <th style="font-size:10px"><center>EQUIPO PRINCIPAL </center></th>
+                            <th style="font-size:10px"><center>TIPO</center></th> 
+                            <th style="font-size:10px"><center>MARCA/ MODELO</center></th> 
+                            <th style="font-size:10px"><center>SERIE</center></th> 
+                            <th style="font-size:10px"><center>CAPACIDAD DE DISEÑO/ OPERATIVA</center></th> 
+                            <th style="font-size:10px"><center>FECHA DE INSTALACIÓN</center></th> 
+                            <th style="font-size:10px"><center>FECHA ÚLTIMO MANTENIMIENTO INTEGRAL</center></th> 
+                            <th style="font-size:10px"><center>ESTADO OPERATIVO</center></th> 
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {% for confpr in confspr %}
+                      <tr>
+                          <td style="font-size:10px"><center>{{ forloop.counter }}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.codigo}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.nombre}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.planta_name}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.planta_secundaria_name}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.sistema_name}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.subsistema_name}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.equipo_principal_name}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.tipo}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.marca}} / {{confpr.modelo}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.serie}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.capacidad}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.año}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.fu_mantenimiento}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.estado}}</center></td>
+                      </tr>
+                          {% endfor %}
+                      </tbody>
+                   </table>
+                   <div align="right"style="font-size:10px">O (OPERATIVO) - F (FUERA DE SERVICIO)</div>
+                   <br>
+                </div>
+                <br>
+                  <table style="width: 100%">
+                    <center><a id="btn_print"><img src="{% static 'iconos/reporte3.png' %}" title='REPORTE PDF'></a></center>
+                  </table>
+                  <br>
+    </div>
+  </section>
+  </div>
+  {% endblock%}
+  
+  {% block javascript %}
+  
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script language="javascript">
+  
+  // INFORMACIÓN DE LA FECHA
+  var hoy;
+  (function($) {
+    tiempoTranscurrido = Date.now();
+    hoy = new Date(tiempoTranscurrido);
+    document.getElementById('fecha_actual').textContent= hoy.toLocaleDateString(); 
+      //HACER PDF
+      // Escuchamos el click del botón
+    $(document).ready(function($) 
+    { 
+      function imprim1(){
+        window.print();
+      }
+      $("#btn_print").on('click', function(event) 
+      {
+        imprim1();       
+      });
+      
+   
+      });
+
+              //INFORMACIÓN DEL ENCABEZADO
+
+var form = $(this).closest("form");
+$.ajax({
+            url: '{% url "vista_listado_configReport" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array2 =$.parseJSON(data.listado);
+
+                 document.getElementById('empresa').textContent=array2[0].fields.empresa;
+                 document.getElementById('direccion').textContent=array2[0].fields.direccion;
+                 document.getElementById('email').textContent=array2[0].fields.email;
+                 $("#logo").attr("src","{{ MEDIA_URL }}"+array2[0].fields.logo);
+
+                }})
+   
+       })(jQuery);
+  
+  </script>
+  {% endblock %}
+  {% block footer %}
+  {% endblock %}
+
+
+
+
+</page>

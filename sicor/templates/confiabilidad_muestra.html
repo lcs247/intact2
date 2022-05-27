@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CONFIABILIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+{% if equipospr or equipossec %}
+<section class="ftco-section">
+    <div class="container">
+        <br>
+        <nav class="nav nav-pills nav-justified">
+            <a class="nav-item nav-link" href='#'>Plantas Principales Secundarios</a>
+            <a class="nav-item nav-link" href='#'>Plantas Secundarias</a>
+            <a class="nav-item nav-link" href='#'>Sistemas</a>
+            <a class="nav-item nav-link" href='{% url "confiabilidad_muestra_subsistemas" %}'>Subsistemas</a> 
+            <a class="nav-item nav-link active" href='{% url "confiabilidad_muestra" %}'>Equipos Principales</a>
+            <a class="nav-item nav-link" href='{% url "confiabilidad_muestra2" %}'>Equipos Secundarios</a>
+        </nav>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <br>
+                <h2 class="heading-section">CONFIABILIDAD DE EQUIPOS PRINCIPALES</h2>
+            </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+            <form method="get">
+                <div id="custom-search-input">
+                    <div class="input-group input-navbar">
+                        <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                        <span class="input-group-text" >
+                            <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href='#'></a>
+
+        </nav>
+        <br>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>TAG</center></th>
+                            <th><center>ACTIVO</center></th>
+                  
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for equipopr in equipospr %}
+                        <tr id="">
+                            <td><center>{{equipopr.codigo}}</center></td>
+                            <td><center>{{equipopr.nombre}}</center></td>
+
+                        {% if user.is_authenticated %}
+
+                            <td>
+                                <center><a href="{% url 'detalle_confiabilidad' %}?lang={{equipopr.id}}"><img src="{% static 'iconos/visualizar.png' %}" title="VISUALIZAR FALLAS"></a>&nbsp;&nbsp; 
+                                    <a href='{% url "confiabilidad_form" %}?lang={{equipopr.id}}'><img src="{% static 'iconos/nuevo.png' %}" title="REGISTRAR FALLA"></a>&nbsp;&nbsp;
+                                    <a href="{% url 'reporte_confiabilidad_prueba' %}?lang={{equipopr.id}}" target="_blank" rel="noopener noreferrer"><img src="{% static 'iconos/reporte.png' %}" title='REPORTE PDF'></a></center>
+                                </td>
+       
+                        {% endif %}
+                        </tr>
+                    {% endfor %}
+
+                    {% else %}
+
+                    <br>
+                    <section class="ftco-section">
+                    <div class="container">
+                        <nav class="nav nav-pills nav-justified"> 
+             
+                            <a class="nav-item nav-link" href='{% url "confiabilidad_muestra" %}'>Equipos Principales</a>
+                            <a class="nav-item nav-link" href='{% url "confiabilidad_muestra2" %}'>Equipos Secundarios</a>
+        
+                        </nav>
+                        <br>
+                    <form method="get">
+                        <div id="custom-search-input">
+                            <div class="input-group input-navbar">
+                                <input type="text" class="form-control" placeholder="Buscar.." name="buscar" value="{{ request.GET.buscar }}">
+                                <span class="input-group-text" >
+                                    <button type="submit" class="boton btn-success wow zoomIn">Buscar</button>       
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                    <br><br><br><br><br>
+                        <center><h1>No hay Equipos registrados</h1></center>
+                        <br><br>
+                        <br><br><br><br>
+                    {% endif %}
+                      </tbody>
+                    </table>
+                    <nav class="nav nav-pills nav-justified"> 
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                        {% if page_obj.has_previous %}
+                        <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.previous_page_number }}'>Atrás</a></div>
+                        {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;
+                        {% if page_obj.has_next %}
+                        <div class="nav-item nav-link"><a class="btn btn-primary wow zoomIn" href='?page={{ page_obj.next_page_number }}'>Siguiente</a></div>
+                        {% endif %}
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                        <a class="nav-item nav-link disabled" href="#"></a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock%}
+
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+  
+  var array=[];
+
+  
+  var form = $(this).closest("form");
+
+          $.ajax({
+            url: '{% url "buscar_listado_conf" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length-1;
+                 {% comment %}console.log(array);{% endcomment %}
+
+
+            }})
+
+        })(jQuery);
+
+</script>
+{% endblock %}

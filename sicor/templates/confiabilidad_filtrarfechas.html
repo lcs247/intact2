@@ -1,0 +1,721 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CONFIABILIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+<div class="page-section" id="filtro">
+  <div class="container">
+    <h1 class="text-center wow fadeInUp" id="filtrarTitulo">FILTRAR</h1>
+    <form name='form'class="contact-form mt-5" action="" method="get" id="filtrarform">
+      {% csrf_token %}
+      <div class="row mb-3">
+        <div class="col-sm-6 py-2 wow fadeInLeft">
+          <label >Fecha Inicial</label>
+          <input type="date" id="ini" class="col-sm-6 py-2 wow fadeInLeft">
+        </div>
+        <div class="col-sm-6 py-2 wow fadeInRight">
+          <label >Fecha Final</label>
+          <input type="date" id="fin" class="col-sm-6 py-2 wow fadeInRight">
+        </div>
+      </div>
+      <nav class="nav nav-pills nav-justified"> 
+        <a class="nav-item nav-link disabled" href="#"></a>  
+        <button type="button" class="btn btn-primary wow zoomIn" id="filtrar">Filtrar</button>        
+        <a class="nav-item nav-link disabled" href='#'></a>
+        <div><center id='res2'><center></div> 
+        <a class="nav-item nav-link disabled" href='#'></a>
+      </nav>
+    </form>
+  </div>
+</div>
+
+<div id="myDIV" style="display: none;">
+  {% if confspr %}
+  <section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <br>
+                <h2 class="heading-section" id="titulo"></h2>
+            </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+          <a class="nav-item nav-link disabled" href="#"></a>          
+          <a class="nav-item nav-link"><center id='PDF'></center></a>     
+          <a class="nav-item nav-link active" href='{% url "confiabilidad_muestra" %}'>ATRÁS</a>
+          <a class="nav-item nav-link" href="#"><div><center id='filtrar'><center></div></a>
+          <a class="nav-item nav-link disabled" href='#'></a>
+      </nav>
+      <br>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                  <nav class="nav nav-pills nav-justified">   
+                    <h3 class="nav-item nav-link" style="background-color: green;color: white;" id="verlistado">LISTADO DE FALLAS</h3>          
+                  </nav>
+                  <div id="listado" style="display: none;">
+                    <table class="table table-striped" id="tabla">
+                      <thead>
+                        <tr>
+                            <th style="display: none;"><center>ACTIVO</center></th>
+                            <th><center>INICIO FALLA</center></th>
+                            <th><center>FINAL FALLA</center></th>
+                            <th><center>UPTIME (días)</center></th>
+                            <th><center>DOWNTIME (días)</center></th>
+                            <th><center>COSTO (USD)</center></th>
+                            <th><center>DESCRIPCIÓN</center></th>
+                  
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for confpr in confspr %}
+                        <tr id="fila{{confpr.id}}">
+                            <td style="display: none;"><center id="nombreactv{{confpr.id}}">{{confpr.activo.nombre}}</center></td>
+                            <td ><center>{{confpr.inicio_falla}}</center></td>
+                            <td ><center>{{confpr.final_falla}}</center></td>
+                            <td ><center id="v_up{{confpr.id}}"></center></td>
+                            <td ><center id="v_down{{confpr.id}}"></center></td>
+                            <td><center>{{confpr.costo|floatformat:2}}</center></td>
+                            <td><center>{{confpr.descripcion}}</center></td>
+  
+                        {% if user.is_authenticated %}
+  
+                            <td>
+                              <center><a href="{% url 'listaPr_confiabilidad_editar' confpr.id %}"><img src="{% static 'iconos/editar.png' %}" title="EDITAR"></a>&nbsp;&nbsp; 
+                              <a href="{% url 'listaPr_confiabilidad_eliminar' confpr.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="ELIMINAR"></a></center>
+        
+                            </td>
+                           
+                        {% endif %}
+                        </tr>
+  
+                    {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+              
+                    <br>
+                    <nav class="nav nav-pills nav-justified">   
+                        <h3 class="nav-item nav-link" style="background-color: green;color: white;" id="verResultados">RESULTADOS</h3>          
+                    </nav>
+                    <br>
+                    <div id="resultados" style="display: none;">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th><center>UPTIME TOTAL (días)</center></th>
+                          <th><center>DOWNTIME TOTAL (días)</center></th>
+                          <th><center>COSTO TOTAL (USD)</center></th>
+                          <th><center>No. FALLAS</center></th>
+                          <th><center>AÑOS</center></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            <td><center id="up"></center></td>
+                            <td><center id="down"></center></td>
+                            <td><center id="costo_total"></center></td>
+                            <td><center id="fallas"></center></td>
+                            <td><center id="años"></center></td>
+  
+                        </tr>
+                      </tbody>
+                    </table>
+                    <br>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th><center>TIEMPO TOTAL DE FUNCIONAMIENTO (TTF) - días</center></th>
+                          <th><center>TIEMPO PROMEDIO ENTRE FALLAS (MTBF) - días</center></th>
+                          <th><center>TIEMPO PROMEDIO DE REPARACIÓN (MTTR) - días</center></th>
+                          <th><center>TIEMPO PROMEDIO FUNCIONAL (MTTF) - días</center></th>
+                          <th><center>TASA DE FALLA (λ)</center></th>
+                          <th><center>TASA DE REPARACIÓN (µ)</center></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            <td><center id="TTF"></center></td>
+                            <td><center id="MTBF"></center></td>
+                            <td><center id="MTTR"></center></td>
+                            <td><center id="MTTF"></center></td>
+                            <td><center id="TF"></center></td>
+                            <td><center id="TR"></center></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <br>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+  
+                          <th><center>CONFIABILIDAD OPERACIONAL</center></th>
+                          <th><center>DISPONIBILIDAD OPERACIONAL</center></th>
+                          <th><center>MANTENIBILIDAD</center></th>
+  
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            <td><center id="CO"></center></td>
+                            <td><center id="DO"></center></td>
+                            <td><center id="M"></center></td>
+  
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div><center id='res'><center></div> 
+                    <br>
+                </div>
+                    <nav class="nav nav-pills nav-justified">   
+                      <h3 class="nav-item nav-link" style="background-color: green;color: white;" id="verConf">CONFIABILIDAD EN EL TIEMPO / PROBABILIDAD DE FALLA</h3>          
+                    </nav>
+                    <br>
+                    <div id="conf" style="display: none;">
+
+                                 <!-- TABLA DE PROBABILIDADES -->
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th><center>t (días)</center></th>
+                            <th><center>CONFIABILIDAD EN EL TIEMPO</center></th>
+                            <th><center>PROBABILIDAD DE FALLA</center></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                              <td><center id="t0">1</center></td>
+                              <td><center id="ct0"></center></td>
+                              <td><center id="pf0"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t1">5</center></td>
+                            <td><center id="ct1"></center></td>
+                            <td><center id="pf1"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t2">10</center></td>
+                            <td><center id="ct2"></center></td>
+                            <td><center id="pf2"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t3">15</center></td>
+                            <td><center id="ct3"></center></td>
+                            <td><center id="pf3"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t4">20</center></td>
+                            <td><center id="ct4"></center></td>
+                            <td><center id="pf4"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t5">25</center></td>
+                            <td><center id="ct5"></center></td>
+                            <td><center id="pf5"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t6">30</center></td>
+                            <td><center id="ct6"></center></td>
+                            <td><center id="pf6"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t7">40</center></td>
+                            <td><center id="ct7"></center></td>
+                            <td><center id="pf7"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t8">50</center></td>
+                            <td><center id="ct8"></center></td>
+                            <td><center id="pf8"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t9">60</center></td>
+                            <td><center id="ct9"></center></td>
+                            <td><center id="pf9"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t10">70</center></td>
+                            <td><center id="ct10"></center></td>
+                            <td><center id="pf10"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t11">80</center></td>
+                            <td><center id="ct11"></center></td>
+                            <td><center id="pf11"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t12">90</center></td>
+                            <td><center id="ct12"></center></td>
+                            <td><center id="pf12"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t13">100</center></td>
+                            <td><center id="ct13"></center></td>
+                            <td><center id="pf13"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t14">150</center></td>
+                            <td><center id="ct14"></center></td>
+                            <td><center id="pf14"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t15">200</center></td>
+                            <td><center id="ct15"></center></td>
+                            <td><center id="pf15"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t16">250</center></td>
+                            <td><center id="ct16"></center></td>
+                            <td><center id="pf16"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t17">300</center></td>
+                            <td><center id="ct17"></center></td>
+                            <td><center id="pf17"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t18">350</center></td>
+                            <td><center id="ct18"></center></td>
+                            <td><center id="pf18"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t19">400</center></td>
+                            <td><center id="ct19"></center></td>
+                            <td><center id="pf19"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t20">500</center></td>
+                            <td><center id="ct20"></center></td>
+                            <td><center id="pf20"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t21">600</center></td>
+                            <td><center id="ct21"></center></td>
+                            <td><center id="pf21"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t22">700</center></td>
+                            <td><center id="ct22"></center></td>
+                            <td><center id="pf22"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t23">800</center></td>
+                            <td><center id="ct23"></center></td>
+                            <td><center id="pf23"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t24">900</center></td>
+                            <td><center id="ct24"></center></td>
+                            <td><center id="pf24"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t25">1000</center></td>
+                            <td><center id="ct25"></center></td>
+                            <td><center id="pf25"></center></td> 
+                          </tr>
+                          <tr>
+                            <td><center id="t26">1100</center></td>
+                            <td><center id="ct26"></center></td>
+                            <td><center id="pf26"></center></td> 
+                          </tr>
+                        </tbody>
+                      </table>
+                      <br>
+                      <div>
+                        <table class="table table-striped">
+                          <TR align="LEFT" style="height: 20px"><TH>PROBABILIDAD DE FALLA DEL 100 % (días)</TH>
+                            <TD align="CENTER" id="dia_exacto"></TD></TR>
+                        </table>
+                      </div>
+                      <br>
+                </div> 
+                                  <!-- GRÁFICA DE DATOS -->
+                    <nav class="nav nav-pills nav-justified">   
+                      <h3 class="nav-item nav-link" style="background-color: green;color: white;" id="verGrafica">GRÁFICA</h3>          
+                    </nav>
+                    <div id="vgrafica" style="display: none;">                                
+                    <nav class="nav nav-pills nav-justified">   
+                      <div class="nav-item nav-link">
+                        <canvas id="grafica"></canvas>
+                      </div>
+                      <!-- <div class="nav-item nav-link">
+                        <canvas id="grafica2"></canvas>
+                      </div> -->
+                    </nav>
+                  </div>
+                    {% else %}
+  
+                    <br>
+                    <section class="ftco-section">
+                    <div class="container">
+                    <br><br><br><br><br>
+                        <center><h1>No hay Fallas registradas para este Equipo</h1></center>
+                        <br><br>
+                        <nav class="nav nav-pills nav-justified"> 
+                            <a class="nav-item nav-link disabled" href='#'></a>
+                            <a class="nav-item nav-link" href='{% url "confiabilidad_form" %}'>Registrar Falla</a>
+                            <a class="nav-item nav-link disabled" href='#'></a>
+                        </nav>
+                        <br>
+                        <nav class="nav nav-pills nav-justified"> 
+                          <a class="nav-item nav-link disabled" href="#"></a>          
+                          <a class="nav-item nav-link disabled" href='#'></a>
+                          <a class="nav-item nav-link active" href='{% url "confiabilidad_muestra" %}'>ATRÁS</a>
+                          <a class="nav-item nav-link disabled" href="#"></a>
+                          <a class="nav-item nav-link disabled" href='#'></a>
+                      </nav>
+                      <br><br><br><br>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+  </section>
+</div>
+<div id="myDIV2" style="display: none;">
+ 
+  <section class="ftco-section">
+    <div class="container">
+      <br>
+
+      <center><h1>No hay Fallas registradas para este Equipo en el lapso de tiempo indicado</h1></center>
+      <br>
+      <br>
+      <center><a class="nav-item nav-link" href="#"><div><center id='filtrar2'><center></div></a></center>
+
+      <br>
+
+  </section>
+</div>
+  
+{% endblock %}
+{% block javascript %}
+<script language="javascript">
+
+(function($) {
+
+  var array=[];  
+  var valores=[]; //ID
+  var sum_up=0;
+  var sum_down=0;
+  var URLsearch=[];
+  var URLfilter=[];
+  var fecha_fin=[];
+  var fecha_fin_down=[];
+  var fecha_ini=[];
+  var fecha_ini_up=[];
+  var max_fin=0;
+  var min_ini=0;
+  var count=0;
+  var count2=0;
+  var count3=0;
+  var count4=0;
+  var n_fallas=0;
+  var TTF=0;
+  var años=0;
+  var MTBF=0;
+  var MTTR=0;
+  var MTTF=0;
+  var tasa_falla=0;
+  var tasa_repa=0;
+  var activo;
+  var orden=[];
+  var orden2=[];
+  var CO=0;
+  var DO=0;
+  var M=0;
+  var max=0;
+  var costo=[];
+  var costo_total=0;
+  var CT=[];
+  var PF=[];
+  var array_filter=[];
+  var fin;
+  var ini;
+  var limite3=0;
+  var rango;
+  var estadoi=true;
+  var estadof=false;
+  var d_exacto;
+
+
+  function filtrar(){
+                    fin = document.getElementById("fin").value;
+                    ini = document.getElementById("ini").value;
+
+                    if(fin && ini){
+                    let accounts =array_filter;
+                    let busca = accounts.filter(n => n.fields.inicio_falla >= ini && n.fields.inicio_falla <= fin);
+                    rango=busca.length;
+                    $("#filtro").remove() ;
+                    if (rango>0){
+
+                    document.getElementById("myDIV").style.display = "block";
+
+                  //LISTAR FECHAS
+                    limite2=busca.length;
+                    
+                    for (i=0;i<limite2;i++){
+                            activo=busca[0].fields.nombre;
+                            fecha_ini[i]=busca[i].fields.inicio_falla;
+                            fecha_fin[i]=busca[i].fields.final_falla;
+                            costo[i]=busca[i].fields.costo;
+                            orden[i]=busca[i].pk;
+                            if (i>0){
+                              var day3 = new Date(fecha_fin[i-1]); 
+                              var day4 = new Date(fecha_ini[i]);
+                              fecha_ini_up[i]= (Math.abs(day4-day3))/(1000 * 3600 * 24);
+                            }
+                            else{
+                              fecha_ini_up[i]=1;
+                            }
+                            var day5 = new Date(fecha_fin[i]); 
+                            var day6 = new Date(fecha_ini[i]);
+                            fecha_fin_down[i]= (Math.abs(day6-day5))/(1000 * 3600 * 24);
+                            sum_up += fecha_ini_up[i];
+                            sum_down += fecha_fin_down[i];
+                            costo_total +=costo[i];
+                            document.querySelector('#v_up'+orden[i]).textContent=fecha_ini_up[i].toFixed(2);
+                            document.querySelector('#v_down'+orden[i]).textContent=fecha_fin_down[i].toFixed(2);
+                            count ++;
+                    }
+                    limite3=array.length;
+
+                    for (i=0;i<limite3;i++){
+                      if (orden2[i]==orden[count4]){
+                        count4++;
+                      }
+                      else{
+                        $('#fila'+orden2[i]).remove();
+                      }
+                    }
+                  max_fin = fecha_fin[limite2-1]
+                  min_ini = fecha_ini[limite2-limite2];
+                  n_fallas =limite2;
+                  max = Math.max(...fecha_ini_up);
+                  var day1 = new Date(min_ini); 
+                  var day2 = new Date(max_fin);
+                  var difference= Math.abs(day2-day1);
+                  TTF = difference/(1000 * 3600 * 24)
+                  años=TTF/365;
+                  MTBF=TTF/n_fallas;
+                  MTTR=sum_down/n_fallas;
+                  MTTF=sum_up/n_fallas;
+                  tasa_falla=1/MTBF;
+                  tasa_repa=1/MTTR;
+                  CO=(Math.exp(-tasa_falla*max))*(100);
+                  DO=((MTTF)/(MTTF+MTTR))*(100);
+                  M=(1-Math.exp(-tasa_repa*2))*(100);
+                  d_exacto=((-Math.log(0.005/100))/(tasa_falla));
+
+                  for (i=0;i<27;i++){
+                      if (count2==0){
+                        CT[count2]=(Math.exp(-tasa_falla*1))*(100);
+                        PF[count2]=100-CT[count2];
+                        count2++;
+                        count3=count3+5;
+                      }
+                      else{
+                        if (count3>0 && count3<=25){
+                          CT[count2]=(Math.exp(-tasa_falla*count3))*(100);
+                          PF[count2]=100-CT[count2];
+                          count2++;
+                          count3=count3+5;
+                        }
+                        if(count3>=30 && count3<=90){
+                          CT[count2]=(Math.exp(-tasa_falla*count3))*(100);
+                          PF[count2]=100-CT[count2];
+                          count2++;
+                          count3=count3+10;
+                        }
+                        if(count3>=100 && count3<=350){
+                          CT[count2]=(Math.exp(-tasa_falla*count3))*(100);
+                          PF[count2]=100-CT[count2];
+                          count2++;
+                          count3=count3+50;
+                        }
+                        if(count3>=400 && count3<=1000){
+                          CT[count2]=(Math.exp(-tasa_falla*count3))*(100);
+                          PF[count2]=100-CT[count2];
+                          count2++;
+                          count3=count3+100;
+                        }
+                        if(count3==1100){
+                          CT[count2]=(Math.exp(-tasa_falla*count3))*(100);
+                          PF[count2]=100-CT[count2];
+                        }
+                      }
+                      document.getElementById('ct'+i).textContent=CT[i].toFixed(2)+' %';
+                      document.getElementById('pf'+i).textContent=PF[i].toFixed(2)+' %';
+                    }
+ 
+                  $("#res").append("<a href={% url 'form_resultPr_filtr' %}?lang="+URLfilter[1]+'?lang='+ini+'?lang='+fin+"><img src='{% static 'iconos/guardar.png' %}' title='GUARDAR RESULTADOS'></a>");  
+                  $("#filtrar").append("<a href={% url 'filtrar_confiabilidad' %}?lang="+URLfilter[1]+"><img src='{% static 'iconos/lupa.png' %}' title='VOLVER A FILTRAR POR FECHAS'></a>");  
+                  $("#PDF").append("<a href={% url 'reporte_confiabilidad_pruebaFltr' %}?lang="+URLfilter[1]+'?lang='+ini+'?lang='+fin+" target='_blank' rel='noopener noreferrer'><img src='{% static 'iconos/reporte2.png' %}' title='REPORTE PDF'></a>");  
+
+                  document.getElementById('up').textContent=sum_up.toFixed(2);
+                  document.getElementById('down').textContent= sum_down.toFixed(2);     
+                  document.getElementById('costo_total').textContent=costo_total.toFixed(2);
+                  document.getElementById('fallas').textContent= n_fallas; 
+                  document.getElementById('años').textContent=años.toFixed(1);
+                  document.getElementById('TTF').textContent= TTF.toFixed(2); 
+                  document.getElementById('MTBF').textContent=MTBF.toFixed(2);
+                  document.getElementById('MTTR').textContent= MTTR.toFixed(2); 
+                  document.getElementById('MTTF').textContent=MTTF.toFixed(2);
+                  document.getElementById('TF').textContent=tasa_falla.toFixed(4);
+                  document.getElementById('TR').textContent=tasa_repa.toFixed(4);
+                  document.getElementById('CO').textContent=CO.toFixed(2)+' %';
+                  document.getElementById('DO').textContent=DO.toFixed(2)+' %';
+                  document.getElementById('M').textContent=M.toFixed(2)+' %';
+                  document.getElementById('titulo').textContent= document.getElementById('nombreactv'+orden[0]).textContent;   
+                  document.getElementById('dia_exacto').textContent= d_exacto.toFixed(2);  
+
+                  
+//GRÁFICAS
+
+// Obtener una referencia al elemento canvas del DOM
+const $grafica = document.querySelector("#grafica");
+const $grafica2 = document.querySelector("#grafica2");
+// Las etiquetas son las que van en el eje X. 
+const etiquetas = ["1", "5", "10", "15","20", "25", "30", "40","50", "60", "70", "80","90", "100", "150", "200", "250", "300", "350", "400", "500", "600", "700", "800", "900", "1000","1100"]
+// Podemos tener varios conjuntos de datos. Comencemos con uno
+const datosCT = {
+    label: "Confiabilidad en el tiempo",
+    data: CT, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
+    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color de fondo
+    borderColor: 'rgba(54, 162, 235, 1)', // Color del borde
+    borderWidth: 3,// Ancho del borde
+};
+const datosPF = {
+    label: "Probabilidad de falla",
+    data: PF, // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
+    backgroundColor: 'rgba(255, 159, 64, 0.2)',// Color de fondo
+    borderColor: 'rgba(255, 159, 64, 1)',// Color del borde
+    borderWidth: 3,// Ancho del borde
+};
+new Chart($grafica, {
+    type: 'line',// Tipo de gráfica
+    data: {
+        labels: etiquetas,
+        datasets: [
+            datosCT,datosPF
+            // Aquí más datos...
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }],
+        },
+    }
+});
+                    }
+                    else{
+                      document.getElementById("myDIV2").style.display = "block";
+                      $("#filtrar2").append("<a href={% url 'filtrar_confiabilidad' %}?lang="+URLfilter[1]+"><img src='{% static 'iconos/lupa.png' %}' title='Filtrar por Fechas'></a>");  
+
+                    }
+                    }
+                    else{
+                        alert('Ingrese valores en los campos');
+                    }
+                };
+                
+$( "#filtrar" ).click(function() {
+                  filtrar();
+ });
+
+  var form = $(this).closest("form");
+          $.ajax({
+            url: '{% url "buscar_listado_conf" %}',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                 array =$.parseJSON(data.listado);
+                 limite=array.length;
+                 URLsearch = window.location.search;
+                 URLfilter =(URLsearch).split("?lang=")
+
+                 for (i=0;i<limite;i++){
+                        valores[i]=array[i].fields.activo;
+                        if (valores[i]==URLfilter[1]){
+                            array_filter[count]=array[i];
+                            orden2[count]=array_filter[count].pk;
+                            count ++;
+                        }
+                  }
+                  $("#res2").append("<a class='nav-item nav-link ' href='{% url 'detalle_confiabilidad' %}?lang="+URLfilter[1]+"'><img src='{% static 'iconos/atras.png' %}' title='Atrás'></a>" );  
+                  {% comment %} console.log(array_filter); {% endcomment %}
+
+              }
+
+                })
+
+// function myFunction() {
+//     var x = document.getElementById("myDIV");
+//     if (x.style.display === "none") {
+//         x.style.display = "block";
+//     } else {
+//         x.style.display = "none";
+//     }
+// }
+$( "#verlistado" ).click(function() {
+                verlistado();
+ });
+ $( "#verResultados" ).click(function() {
+                verResultados();
+ });
+ $( "#verConf" ).click(function() {
+                verConf();
+ });
+ $( "#verGrafica" ).click(function() {
+                verGrafica();
+ });
+
+function verlistado() {
+    var x = document.getElementById("listado");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function verResultados() {
+    var x = document.getElementById("resultados");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function verConf() {
+    var x = document.getElementById("conf");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function verGrafica() {
+    var x = document.getElementById("vgrafica");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+        })(jQuery);
+
+</script>
+{% endblock %}

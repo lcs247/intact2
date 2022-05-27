@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="page-section">
+    <div class="container">
+
+
+        <br>
+        <nav class="nav nav-pills nav-justified"> 
+            {% if configs %}
+            {% for config in configs %}
+                <a class="nav-item nav-link " href='{% url "configReporte_editar" config.id %}'><img src="{% static 'iconos/configuracion.png' %}" title="CONFIGURACIÓN DE REPORTES"><br><div><strong>CONFIGURACIÓN DEL SISTEMA</strong></div></a> 
+            {% endfor %}
+            {% else %}
+                <a class="nav-item nav-link " href='{% url "configReporte"%}'><img src="{% static 'iconos/configuracion.png' %}" title="CONFIGURACIÓN DE REPORTES"><br><div><strong>CONFIGURACIÓN DEL SISTEMA</strong></div></a>    
+            {% endif %}
+                <a class="nav-item nav-link " href='#'><img src="{% static 'iconos/grafico.png' %}" title="Atrás"><br><div><strong>PRUEBA 2</strong></div></a>               
+        </nav>
+        <br>
+
+    </div>
+</div>
+<br><br><br><br><br>
+{% endblock %}

@@ -1,0 +1,229 @@
+<style>
+  body {
+  background: rgb(204,204,204); 
+}
+page {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+page[size="A4"] {  
+  width: 30cm;
+  height: auto; 
+}
+page[size="A4"][layout="landscape"] {
+  width: 29.7cm;
+  height: 21cm;  
+}
+@media print {
+    body, page {
+      box-shadow: 0;
+      size: 210mm 297mm;
+      margin: 2mm 2mm 2mm 2mm;
+      orphans: 0;
+      widows: 0;
+    }
+    .formulario {
+       zoom:120%;
+    }
+    .formulario:nth-child(even) { 
+        page-break-inside: avoid;
+        page-break-after: always;
+    }
+  }
+</style>
+<page size="A4">
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title%}
+  <head>
+    <title>REPORTE-CRITICIDAD</title>
+  </head>
+  {% endblock%}
+  {% block header %}
+  {% endblock%}
+  {% block content%}
+
+  <div id="area_de_impresion">
+  <br>
+  <section class="ftco-section">
+      <div class="container">
+        <div class="formulario">
+          <table border="1" style="width: 100%;height: 200px;">
+            <tr style="height: 100%;width: max-content;">
+              <th style="background-color: white;color: white;width: 35%;"><center><img id="logo" src="" style="height: 100%;width:100%"></center></th>               
+              <th style="background-color: rgb(255, 255, 255);color: black;width: 65%"><center><h1 style=" font-weight: bold">REPORTE DE CRITICIDAD</h1></center></th>               
+            </tr>
+          </table>
+                  <br>
+                  <table border="1" style="width: 100%">
+                      <TR style="height: 20px;width: max-content">
+                          <TH style="width: 20%;">FECHA: </TH>
+                          <TD align="CENTER" id='fecha_actual' style="width: 80%;"></TD>
+                      </TR>
+                      <TR style="height: 20px;width: max-content">
+                        <TH style="width: 20%;">EMPRESA: </TH>
+                        <TD align="CENTER" id="empresa" style="width: 80%;"></TD>
+                    </TR>
+                    <TR style="height: 20px;width: max-content">
+                      <TH style="width: 20%;">DIRECCIÓN: </TH>
+                      <TD align="CENTER" id="direccion" style="width: 80%;"></TD>
+                    </TR>
+                    <TR style="height: 20px;width: max-content">
+                      <TH style="width: 20%;">E-MAIL: </TH>
+                      <TD align="CENTER" id="email" style="width: 80%;"></TD>
+                  </TR>
+                  </table>
+                  <br>
+                  <table style="width: 100%">
+                    <tr style="height: max-content;width: max-content;">
+                      <th><h1 style="color: red;font-weight: bold;font-size:30px;"><center id="titulo">{% for confpr in confspr %}{% if forloop.last %}{{confpr.activo}} {% endif %}{% endfor %}</center></h1></th>               
+                    </tr>
+                  </table>
+                  {% if confspr %}
+                  <br>
+                  <table border="1" style="width: 100%">
+                      <thead>
+                        <tr>
+                          <th style="font-size:10px"><center>TAG.</center></th>
+                          <th style="font-size:10px"><center>ACTIVO</center></th>
+                          <th style="font-size:10px"><center>LOCACIÓN</center></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {% for confpr in confspr %}
+                      <tr>
+                          <td style="font-size:10px"><center>{{confpr.tag }}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.activo.nombre}}</center></td>
+                          <td style="font-size:10px"><center>{{confpr.locacion}}</center></td>
+                      </tr>
+                          {% endfor %}
+                      </tbody>
+                   </table>
+                   <br>
+                   <table border="1" style="width: 100%">
+                    <thead>
+                      <tr>
+                        <th style="font-size:10px"><center>REDUNDANCIA</center></th>
+                        <th style="font-size:10px"><center>NRO. FALLAS</center></th>
+                        <!-- <th style="font-size:10px"><center>MTBF</center></th> -->
+                        <th style="font-size:10px"><center>OCURRENCIA</center></th> 
+                        <th style="font-size:10px"><center>SEGURIDAD Y SALUD</center></th>
+                        <th style="font-size:10px"><center>MEDIO AMBIENTE</center></th>
+                        <th style="font-size:10px"><center>COSTO DE MANTENIMIENTO</center></th>
+                        <th style="font-size:10px"><center>PÉRDIDA DE PRODUCCIÓN</center></th>
+                        <th style="font-size:10px"><center>TIEMPO DE EXPOSICIÓN</center></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for confpr in confspr %}
+                    <tr>
+                        <td style="font-size:10px"><center>{{confpr.r.descripcion}}</center></td>
+                        <td style="font-size:10px"><center>{{confpr.fallas}}</center></td>
+                        <!-- <td style="font-size:10px"><center>{{confpr.mtbf}}</center></td> -->
+                        <td style="font-size:10px"><center>{{confpr.ocurrencia.descripcion}}</center></td>
+                        <td style="font-size:10px"><center>{{confpr.segysa.descripcion}}</center></td>
+                        <td style="font-size:10px"><center>{{confpr.md.descripcion}}</center></td>
+                        <td style="font-size:10px"><center>{{confpr.cm.descripcion}}</center></td>
+                        <td style="font-size:10px"><center>{{confpr.pp.descripcion}}</center></td>
+                        <td style="font-size:10px"><center>{{confpr.ex.descripcion}}</center></td>
+                    </tr>
+                        {% endfor %}
+                    </tbody>
+                 </table>
+                 <br>
+                 <table border="1" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th style="font-size:10px"><center>VALOR DE RIESGO</center></th>
+                      <th style="font-size:10px"><center>CATEGORÍA DE RIESGO</center></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for confpr in confspr %}
+                  <tr>
+                      <td style="font-size:10px"><center>{{confpr.vdr}}</center></td>
+                      <td style="font-size:10px"><center>{{confpr.ctdr}}</center></td>
+                  </tr>
+                      {% endfor %}
+                  </tbody>
+               </table>
+               <br>
+                   {% endif %}
+                  <br>
+                </div>
+                 <br>
+                </div>
+                <br>
+                  <table style="width: 100%">
+                    <center><a id="btn_print"><img src="{% static 'iconos/reporte3.png' %}" title='REPORTE PDF'></a></center>
+                  </table>
+                  <br>
+    </div>
+  </section>
+  </div>
+
+  {% endblock%}
+  
+  {% block javascript %}
+  
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script language="javascript">
+  
+  var hoy;
+  var valores=[];
+  var count=0;
+  var array_filter=[];
+  var orden=[];
+
+  (function($) {
+
+
+    var form = $(this).closest("form");
+
+// INFORMACIÓN DE LA FECHA
+    tiempoTranscurrido = Date.now();
+    hoy = new Date(tiempoTranscurrido);
+    document.getElementById('fecha_actual').textContent= hoy.toLocaleDateString(); 
+      //HACER PDF
+      // Escuchamos el click del botón
+    $(document).ready(function($) 
+    { 
+      function imprim1(){
+        window.print();
+      }
+      $("#btn_print").on('click', function(event) 
+      {
+        imprim1();       
+      });
+      
+   
+      });
+
+      //INFORMACIÓN DEL ENCABEZADO
+      $.ajax({
+          url: '{% url "vista_listado_configReport" %}',
+          data: form.serialize(),
+          dataType: 'json',
+          success: function (data) {
+               array2 =$.parseJSON(data.listado);
+               
+               document.getElementById('empresa').textContent=array2[0].fields.empresa;
+               document.getElementById('direccion').textContent=array2[0].fields.direccion;
+               document.getElementById('email').textContent=array2[0].fields.email;
+               $("#logo").attr("src","{{ MEDIA_URL }}"+array2[0].fields.logo);
+
+              }})
+
+
+   
+       })(jQuery);
+  
+  </script>
+  {% endblock %}
+  {% block footer %}
+  {% endblock %}
+</page>
+

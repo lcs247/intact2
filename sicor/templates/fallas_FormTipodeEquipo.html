@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-TIPOS DE EQUIPO</title>
+</head>
+{% endblock%}
+{% block content%}
+<style>
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,700&display=swap');
+
+.falla {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    font-family: 'Quicksand', sans-serif;
+    line-height: 1.5;
+    font-weight: bold;
+}
+
+.box {
+    width: 300px;
+    margin: 25px 0;
+    display: flex;
+    align-items: center;
+    user-select: none;
+
+    label {
+        font-size: 26px;
+        color: #4D4D4D;
+        position: absolute;
+        z-index: 10;
+        padding-left: 50px;
+        cursor: pointer;
+    }
+
+    input {
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+
+        &:checked {
+
+            ~ .check {
+                border-color: #00EA90;
+                box-shadow: 0px 0px 0px 15px #00EA90 inset;
+
+                &::after {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+        }
+    }
+
+    .check {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        border-radius: 100px;
+        background-color: #FFF;
+        border: 2px solid #00EA90;
+        box-shadow: 0px 0px 0px 0px #00EA90 inset;
+        transition: all 0.15s cubic-bezier(0, 1.05, 0.72, 1.07);
+
+        &::after {
+            content: '';
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 4;
+            position: absolute;
+            transform: scale(0);
+            background-size: 50%;
+            background-image: url('https://s6.picofile.com/d/8392306668/bacc888c-bed7-41a9-bf24-f6ff0718f471/checkmark.svg');
+            background-repeat: no-repeat;
+            background-position: center;
+            transition-delay: 0.2s !important;
+            transition: all 0.25s cubic-bezier(0, 1.05, 0.72, 1.07);
+        }
+    }
+}
+
+
+</style>
+<div class="page-section">
+    <div class="container">
+      <h1 class="text-center wow fadeInUp">Registro de Tipos de Equipo</h1>
+      <form class="contact-form mt-5" action="" method="post">
+        {% csrf_token %}
+        <div class="row mb-3">
+          <div class="col-sm-6 py-2 wow fadeInLeft">
+            <label >Nombre</label>
+            {{form.nombre}}
+          </div>
+          <div class="col-sm-6 py-2 wow fadeInRight">
+            <label >Falla</label>
+            {{form.falla}}
+          </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+          <button type="submit" class="btn btn-primary wow zoomIn">Registrar</button>
+          <a class="nav-item nav-link disabled" href="#"></a>          
+          <a class="nav-item nav-link disabled" href='#'></a>
+          <a class="nav-item nav-link disabled" href='#'></a>
+          <a class="nav-item nav-link " href='{% url "fallas_equipo_muestra" %}'><img src="{% static 'iconos/atras.png' %}" title="Atrás"></a> 
+        </nav>  
+      </form>
+    </div>
+</div>
+{% endblock%}

@@ -1,0 +1,495 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CRITICIDAD</title>
+</head>
+{% endblock%}
+{% block content%}
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <br>
+                <h2 class="heading-section">CONFIGURACIÓN DE PARÁMETROS DE CRITICIDAD
+
+                </h2>
+            </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link active" href='{% url "criticidad_muestra_CSec" %}'>ATRÁS</a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href='#'></a>
+        </nav>
+        <b>CATEGORÍA DE RIESGO</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+
+        {% if categorias %}
+        <a id="" class="nav-item nav-link" href='{% url "registro_Categoria" %}'></a>
+    </nav>
+          <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            {% for categoria in categorias %}
+
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>{{categoria.into_name}}</center></th>
+                            <th><center>{{categoria.alto_name}}</center></th>
+                            <th><center>{{categoria.medio_name}}</center></th>
+                            <th><center>{{categoria.moderado_name}}</center></th>
+                            <th><center>{{categoria.aceptable_name}}</center></th>
+                            {% endfor %}
+
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for categoria in categorias %}
+                        <tr>
+                            <td><center>{{categoria.descripcion}}</center></td>
+                            <td><center>{{categoria.intolerable}}</center></td>
+                            <td><center>{{categoria.alto}}</center></td>
+                            <td><center>{{categoria.medio}}</center></td>
+                            <td><center>{{categoria.moderado}}</center></td>
+                            <td><center>{{categoria.aceptable}}</center></td>
+
+                        {% if user.is_authenticated %}
+
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_Categoria' categoria.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                    <a href="{% url 'listacrit_eliminar_Categoria' categoria.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>  
+                            </td>
+    
+                        {% endif %}
+                        </tr>
+                    {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                    </div>
+                </div>
+        {% else %}
+        <a id="" class="nav-item nav-link" href='{% url "registro_Categoria" %}'>Registrar Parámetro</a>
+    </nav>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-wrap">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <center><h4>No hay parámetros de Categoria registrados </h4></center>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+        {% endif %}
+        <br>
+        <b>REDUNDANCIA</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a id="" class="nav-item nav-link" href='{% url "registro_Redundancia" %}'>Registrar Parámetro</a>
+        </nav>
+        {% if redundancias %}
+
+          <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>VALOR</center></th>
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for redundancia in redundancias %}
+                        <tr>
+                            <td><center>{{redundancia.descripcion}}</center></td>
+                            <td><center>{{redundancia.valor}}</center></td>
+
+                        {% if user.is_authenticated %}
+
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_Redundancia' redundancia.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                    <a href="{% url 'listacrit_eliminar_Redundancia' redundancia.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>  
+                            </td>
+    
+                        {% endif %}
+                        </tr>
+                    {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                    </div>
+                </div>
+        {% else %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-wrap">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <center><h4>No hay parámetros de Redundancia registrados </h4></center>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+        {% endif %}
+        <br>
+        <b>OCURRENCIA</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a id="" class="nav-item nav-link" href='{% url "registro_Ocurrencia" %}'>Registrar Parámetro</a>
+        </nav>
+        {% if ocurrencias %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>RANGO</center></th>          
+                            <th><center>VALOR</center></th>
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for ocurrencia in ocurrencias %}
+                        <tr>
+                            <td><center>{{ocurrencia.descripcion}}</center></td>
+                            <td><center>{{ocurrencia.rango_menor}} &le; Nº. FALLAS &le; {{ocurrencia.rango_mayor}}</center></td>
+                            <td><center>{{ocurrencia.valor}}</center></td>
+                
+                        {% if user.is_authenticated %}                
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_Ocurrencia' ocurrencia.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                <a href="{% url 'listacrit_eliminar_Ocurrencia' ocurrencia.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>   
+                            </td>               
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                       </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <tbody>
+                            <center><h4>No hay parámetros de Ocurrencia registrados</h4></center>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <br>
+        <b>SEGURIDAD Y SALUD</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a id="" class="nav-item nav-link" href='{% url "registro_Segysa" %}'>Registrar Parámetro</a>
+        </nav>
+        {% if segysas %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>VALOR</center></th>
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for segysa in segysas %}
+                        <tr>
+                            <td><center>{{segysa.descripcion}}</center></td>
+                            <td><center>{{segysa.valor}}</center></td>
+                
+                        {% if user.is_authenticated %}
+                
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_Segysa' segysa.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                <a href="{% url 'listacrit_eliminar_Segysa' segysa.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>   
+                            </td>
+                
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <tbody>
+                            <center><h4>No hay parámetros de Seguridad y Salud registrados</h4></center>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <br>
+        <b>MEDIO AMBIENTE</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a id="" class="nav-item nav-link" href='{% url "registro_MDA" %}'>Registrar Parámetro</a>
+        </nav>
+        {% if mdas %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>VALOR</center></th>
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for mda in mdas %}
+                        <tr>
+                            <td><center>{{mda.descripcion}}</center></td>
+                            <td><center>{{mda.valor}}</center></td>
+                
+                        {% if user.is_authenticated %}                
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_MDA' mda.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                <a href="{% url 'listacrit_eliminar_MDA' mda.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>   
+                            </td>               
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                       </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <tbody>
+                            <center><h4>No hay parámetros de Medio Ambiente registrados</h4></center>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <br>
+        <b>COSTO DE MANTENIMIENTO</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a id="" class="nav-item nav-link" href='{% url "registro_Costo" %}'>Registrar Parámetro</a>
+        </nav>
+        {% if costos %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>VALOR</center></th>
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for costo in costos %}
+                        <tr>
+                            <td><center>{{costo.descripcion}}</center></td>
+                            <td><center>{{costo.valor}}</center></td>
+                
+                        {% if user.is_authenticated %}                
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_Costo' costo.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                <a href="{% url 'listacrit_eliminar_Costo' costo.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>   
+                            </td>               
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                       </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <tbody>
+                            <center><h4>No hay parámetros de Costo de Mantenimiento registrados</h4></center>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <br>
+        <b>PÉRDIDA DE PRODUCCIÓN</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a id="" class="nav-item nav-link" href='{% url "registro_Perdida" %}'>Registrar Parámetro</a>
+        </nav>
+        {% if perdidas %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>VALOR</center></th>
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for perdida in perdidas %}
+                        <tr>
+                            <td><center>{{perdida.descripcion}}</center></td>
+                            <td><center>{{perdida.valor}}</center></td>
+                
+                        {% if user.is_authenticated %}                
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_Perdida' perdida.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                <a href="{% url 'listacrit_eliminar_Perdida' perdida.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>   
+                            </td>               
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                       </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <tbody>
+                            <center><h4>No hay parámetros de Pérdida de Producción registrados</h4></center>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <br>
+        <b>EXPOSICIÓN</b>
+        <nav class="nav nav-pills nav-justified"> 
+            <a class="nav-item nav-link disabled" href="#"></a>          
+            <a class="nav-item nav-link disabled" href='#'></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a class="nav-item nav-link disabled" href="#"></a>
+            <a id="" class="nav-item nav-link" href='{% url "registro_Exposicion" %}'>Registrar Parámetro</a>
+        </nav>
+        {% if exposiciones %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th><center>DESCRIPCIÓN</center></th>
+                            <th><center>VALOR</center></th>
+                            {% if user.is_authenticated %}
+                            <th><center>ACCIONES</center></th>
+                            {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for exposicion in exposiciones %}
+                        <tr>
+                            <td><center>{{exposicion.descripcion}}</center></td>
+                            <td><center>{{exposicion.valor}}</center></td>
+                
+                        {% if user.is_authenticated %}                
+                            <td>
+                                <center><a href="{% url 'listacrit_editar_Exposicion' exposicion.id %}"><img src="{% static 'iconos/editar.png' %}" title="Editar"></a>&nbsp;&nbsp;
+                                <a href="{% url 'listacrit_eliminar_Exposicion' exposicion.id %}"><img src="{% static 'iconos/eliminar.png' %}" title="Eliminar"></a></center>   
+                            </td>               
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                       </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <tbody>
+                            <center><h4>No hay parámetros de Exposición registrados</h4></center>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock%}

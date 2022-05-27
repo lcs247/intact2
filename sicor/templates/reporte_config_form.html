@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title%}
+<head>
+	<title>INTACT-CONFIGURACIÓN DEL SISTEMA</title>
+</head>
+{% endblock%}
+{% block content%}
+<div class="page-section">
+    <div class="container">
+      <h1 class="text-center wow fadeInUp">CONFIGURACIÓN DEL SISTEMA</h1>
+      <form class="contact-form mt-5" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row mb-3">
+          <div class="col-sm-6 py-2 wow fadeInLeft">
+            <label >Nombre de la Empresa</label>
+            {{form.empresa}}
+          </div>
+          <div class="col-sm-6 py-2 wow fadeInRight">
+            <label >Dirección de la Empresa</label>
+            {{form.direccion}}
+          </div>
+          <div class="col-sm-6 py-2 wow fadeInLeft">
+            <label >E-mail de la Empresa</label>
+            {{form.email}}
+          </div>
+          <div class="col-sm-6 py-2 wow fadeInRight">
+            <label >Clave Maestra</label>
+            {{form.clave}}
+          </div>
+          <div class="col-12 py-2 wow fadeInUp">
+            <label >Logo de la Empresa</label>
+            {{form.logo}}
+          </div>
+        </div>
+        <nav class="nav nav-pills nav-justified"> 
+          <button type="submit" class="btn btn-primary wow zoomIn">GUARDAR</button>
+          <a class="nav-item nav-link disabled" href="#"></a>          
+          <a class="nav-item nav-link disabled" href='#'></a>
+          <a class="nav-item nav-link disabled" href='#'></a>
+          <a class="nav-item nav-link " href='{% url "inicio" %}'><img src="{% static 'iconos/atras.png' %}" title="ATRÁS"></a> 
+        </nav>  
+     </form>
+    </div>
+</div>
+{% endblock%}
